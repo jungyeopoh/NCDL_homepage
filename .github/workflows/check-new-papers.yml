@@ -1,0 +1,41 @@
+# 매주 월요일 오전 9시(한국 시간) OpenAlex에서 교수님 이름(ORCID)으로 나온 새 논문을 찾아
+# 홈페이지에 없는 것이 있으면 이슈로 알려줍니다. 이슈에 /approve 댓글을 달면 추가됩니다.
+# data/site.yml 의 automation.orcid 를 채워야 동작합니다.
+name: Check new papers
+
+on:
+  schedule:
+    - cron: "7 0 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install "ruamel.yaml>=0.18,<0.20"
+      - name: Scan
+        id: scan
+        run: |
+          set +e
+          python scripts/pubbot.py scan
+          echo "code=$?" >> "$GITHUB_OUTPUT"
+      - name: Open issue
+        if: steps.scan.outputs.code == '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          open=$(gh issue list --repo "$GITHUB_REPOSITORY" --label paper-candidates --state open --json number --jq 'length')
+          if [ "$open" = "0" ]; then
+            gh issue create --repo "$GITHUB_REPOSITORY" --label paper-candidates \
+              --title "새 논문 후보가 있습니다 ($(date +%Y-%m-%d))" --body-file .pubbot_issue.md
+          else
+            echo "열려 있는 후보 이슈가 있어 새로 만들지 않습니다."
+          fi

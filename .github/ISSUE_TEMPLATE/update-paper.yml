@@ -1,0 +1,39 @@
+name: 🔄 논문 상태 변경
+description: 진행 중인 논문의 상태를 바꿉니다 (투고 → 심사 중 → 수정 → 게재). 게재로 바꾸면 Journal 목록으로 자동 이동합니다.
+title: "논문 상태 변경"
+labels: ["update-paper"]
+body:
+  - type: input
+    id: query
+    attributes:
+      label: 논문 제목 (일부만 써도 됨)
+      description: "진행 중 목록에서 이 글자가 들어간 논문을 찾습니다. 예: reservoir"
+    validations:
+      required: true
+  - type: dropdown
+    id: status
+    attributes:
+      label: 새 상태
+      options:
+        - Submitted
+        - Under review
+        - Revision
+        - Accepted
+        - Published
+    validations:
+      required: true
+  - type: input
+    id: doi
+    attributes:
+      label: DOI (게재된 경우)
+      description: Published 로 바꿀 때 DOI를 넣으면 권호·페이지·링크가 자동으로 채워집니다.
+  - type: input
+    id: note
+    attributes:
+      label: IF / JCR 메모
+  - type: checkboxes
+    id: options
+    attributes:
+      label: 옵션
+      options:
+        - label: 홈 화면 대표 논문으로 표시

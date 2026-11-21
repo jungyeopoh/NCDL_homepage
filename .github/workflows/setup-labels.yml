@@ -1,0 +1,22 @@
+# 자동화에 쓰는 이슈 라벨을 만듭니다 (처음 한 번, 또는 이 파일이 바뀔 때).
+name: Setup labels
+
+on:
+  push:
+    branches: [main]
+    paths: [".github/workflows/setup-labels.yml"]
+  workflow_dispatch:
+
+permissions:
+  issues: write
+
+jobs:
+  labels:
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh label create add-paper        --repo "$GITHUB_REPOSITORY" --color 1d4fa3 --description "논문 추가 (자동 처리)" --force
+          gh label create update-paper     --repo "$GITHUB_REPOSITORY" --color 6a3d96 --description "논문 상태 변경 (자동 처리)" --force
+          gh label create paper-candidates --repo "$GITHUB_REPOSITORY" --color c9a632 --description "주간 새 논문 후보" --force

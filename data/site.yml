@@ -12,6 +12,15 @@ school: "School of Integrative Engineering"
 college: "College of ICT Engineering"
 university_ko: "중앙대학교 ICT공과대학 융합공학부"
 
+# ── 디자인 ───────────────────────────────────
+design:
+  # 색상 테마: paper (밝은 회녹색 바탕) / white (흰 바탕) / navy (남색 첫 화면)
+  theme: "paper"
+  # 로고 파일 (images/ 폴더에 올리고 파일명 입력, 예: logo.svg 또는 logo.png). 비우면 기본 마크
+  logo: ""
+  # 홈 첫 화면 배경 사진 (images/ 폴더, 예: hero.jpg). 넣으면 그래프 대신 사진이 깔립니다
+  hero_image: ""
+
 # 홈 화면 첫 문장
 tagline: "We build memory devices and circuits that compute the way the brain does."
 intro: >-
@@ -43,3 +52,13 @@ links:
   google_scholar: ""   # 예: https://scholar.google.com/citations?user=XXXX
   orcid: ""
   cau_faculty_page: ""
+
+# ─────────────────────────────────────────────
+#  자동화 설정 (README 4장)
+# ─────────────────────────────────────────────
+automation:
+  # ORCID iD 를 넣으면 매주 월요일 새로 나온 논문을 찾아 GitHub 이슈로 알려줍니다.
+  # 예: "0000-0002-1234-5678"  (https://orcid.org 에서 확인)
+  orcid: ""
+  # 논문이 게재 처리되면 News 에도 자동으로 소식을 올릴지
+  news_on_publish: true

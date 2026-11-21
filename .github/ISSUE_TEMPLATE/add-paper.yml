@@ -1,0 +1,66 @@
+name: 📄 논문 추가
+description: 새 논문을 홈페이지에 추가합니다. 게재된 논문은 DOI만 넣으면 나머지가 자동으로 채워집니다.
+title: "논문 추가"
+labels: ["add-paper"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **게재된 논문**: 상태 `Published` + DOI만 넣고 제출하면 제목·저자·저널·권호가 자동으로 채워집니다.
+        **진행 중인 논문**: 상태를 고르고 제목(공개해도 되는 수준)과 저자를 적어 주세요.
+        제출 후 1~2분 안에 봇이 처리하고 댓글을 남깁니다.
+  - type: dropdown
+    id: status
+    attributes:
+      label: 상태 (Status)
+      options:
+        - Published
+        - Accepted
+        - Revision
+        - Under review
+        - Submitted
+        - In preparation
+      default: 0
+    validations:
+      required: true
+  - type: input
+    id: doi
+    attributes:
+      label: DOI
+      description: "게재·온라인 공개된 논문이면 넣어 주세요. 예: 10.1002/adma.202413640"
+  - type: input
+    id: title
+    attributes:
+      label: 제목 (Title)
+      description: DOI를 넣었다면 비워 두어도 됩니다.
+  - type: input
+    id: authors
+    attributes:
+      label: 저자 (Authors)
+      description: "예: Gildong Hong†, Jungyeop Oh*  (DOI를 넣었다면 비워 두어도 됩니다)"
+  - type: input
+    id: journal
+    attributes:
+      label: 저널 (Journal)
+      description: 진행 중인 논문이면 투고 저널 (비워 두면 표시 안 함)
+  - type: input
+    id: year
+    attributes:
+      label: 연도 (Year)
+  - type: input
+    id: detail
+    attributes:
+      label: 권·페이지 (Volume, pages)
+      description: "예: 37, 2413640 (2025)  — DOI를 넣었다면 비워 두어도 됩니다"
+  - type: input
+    id: note
+    attributes:
+      label: IF / JCR 메모
+      description: "예: IF 26.8, JCR top 5%"
+  - type: checkboxes
+    id: options
+    attributes:
+      label: 옵션
+      options:
+        - label: 홈 화면 대표 논문으로 표시
+        - label: News에는 올리지 않기

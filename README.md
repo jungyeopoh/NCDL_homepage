@@ -23,33 +23,28 @@ images/
   research/           연구 분야 그림
 assets/             디자인 파일 (CSS, JS, 글꼴) — 보통 수정 불필요
 *.html              페이지 틀 — 보통 수정 불필요
+scripts/pubbot.py   논문 자동화 봇 (GitHub Actions가 실행)
+.github/            논문 추가 양식, 자동화 설정
 ```
 
 ---
 
-## 2. GitHub에 처음 올리기 (10분)
+## 2. 홈페이지 켜기 (처음 한 번)
 
-1. GitHub에 로그인 → 오른쪽 위 **+** → **New repository**
-2. Repository name에 **`내아이디.github.io`** 를 그대로 입력 (예: 아이디가 `jyoh` 이면 `jyoh.github.io`)
-   - **Public** 선택 → **Create repository**
-3. 새 저장소 화면에서 **uploading an existing file** 클릭
-4. 이 압축 파일을 푼 폴더 **안의 내용 전부**(index.html, data, assets, images 등)를 드래그해서 올리고 **Commit changes**
-   - `.nojekyll` 파일은 숨김 파일이라 안 보일 수 있습니다. 같이 올라가면 좋지만, 빠져도 사이트는 동작합니다.
-5. 저장소 **Settings → Pages** 에서
-   - Source: **Deploy from a branch**
-   - Branch: **main** / **/(root)** → **Save**
-6. 1~2분 뒤 `https://내아이디.github.io` 로 접속해서 확인
+이 저장소: `jungyeopoh/NCDL_homepage` (Public)
 
-> 이미 `내아이디.github.io` 저장소를 개인 홈페이지로 쓰고 있다면, 저장소 이름을 `ncdl` 등으로 만들어도 됩니다.
-> 이 경우 학교 도메인을 연결하기 전까지 주소는 `https://내아이디.github.io/ncdl/` 이 되고, 사이트는 그대로 잘 동작합니다.
->
-> 나중에 학생에게 관리를 넘기려면, 개인 계정 대신 무료 **Organization**(예: `cau-ncdl`)을 만들고 저장소를 `cau-ncdl.github.io` 로 만드는 방법도 좋습니다. 학생을 멤버로 추가하면 같이 수정할 수 있습니다.
+1. 저장소 **Settings → Pages**
+2. Source: **Deploy from a branch**, Branch: **main** / **/(root)** → **Save**
+3. 1~2분 뒤 **https://jungyeopoh.github.io/NCDL_homepage/** 에서 확인
+
+> 나중에 학생에게 관리를 넘기려면 무료 **Organization**(예: `cau-ncdl`)을 만들고 저장소를 옮기거나,
+> 저장소 **Settings → Collaborators** 에서 학생 GitHub 계정을 추가하면 같이 수정할 수 있습니다.
 
 ---
 
 ## 3. 학교 도메인 연결하기
 
-원리: 학교 DNS에 "`ncdl.cau.ac.kr` 은 `내아이디.github.io` 로 가라"는 **CNAME 레코드**를 하나 등록하면,
+원리: 학교 DNS에 "`ncdl.cau.ac.kr` 은 `jungyeopoh.github.io` 로 가라"는 **CNAME 레코드**를 하나 등록하면,
 학교 주소로 접속했을 때 GitHub에 있는 홈페이지가 학교 주소 그대로 뜹니다.
 이 등록은 학교 정보통신 부서만 할 수 있으므로 **요청 메일 한 통**이 필요합니다.
 
@@ -59,7 +54,7 @@ assets/             디자인 파일 (CSS, JS, 글꼴) — 보통 수정 불필�
 1. GitHub 오른쪽 위 프로필 사진 → **Settings**(개인 설정) → 왼쪽 **Pages**
 2. **Add a domain** → `ncdl.cau.ac.kr` 입력
 3. 화면에 나오는 **TXT 레코드 이름과 값**을 복사해 둡니다
-   (이름은 `_github-pages-challenge-내아이디.ncdl.cau.ac.kr` 형태)
+   (이름은 `_github-pages-challenge-jungyeopoh.ncdl.cau.ac.kr` 형태)
 
 ### 3-2. 학교에 DNS 등록 요청
 먼저 **학과(부) 행정실**에 연구실 홈페이지 도메인 신청 절차를 물어보면 담당 부서를 바로 알려줍니다.
@@ -75,10 +70,10 @@ assets/             디자인 파일 (CSS, JS, 글꼴) — 보통 수정 불필�
 
 1. CNAME 레코드
    - 호스트: ncdl.cau.ac.kr
-   - 값: 내아이디.github.io.
+   - 값: jungyeopoh.github.io.
 
 2. TXT 레코드 (GitHub 도메인 소유 인증용)
-   - 호스트: _github-pages-challenge-내아이디.ncdl.cau.ac.kr
+   - 호스트: _github-pages-challenge-jungyeopoh.ncdl.cau.ac.kr
    - 값: (GitHub에서 받은 값)
 
 참고: HTTPS 인증서는 GitHub가 Let's Encrypt로 자동 발급합니다.
@@ -96,15 +91,41 @@ cau.ac.kr 에 CAA 레코드가 설정되어 있다면 letsencrypt.org 발급 허
 > ⚠️ Custom domain은 **학교 DNS 등록이 끝난 뒤에** 입력하세요. 먼저 입력하면 `github.io` 주소도 학교 주소로 넘어가서 한동안 사이트가 안 열립니다.
 
 ### 학교가 외부 CNAME 등록을 안 해주는 경우
-- **대안 1: 리다이렉트(전달) 요청** — `ncdl.cau.ac.kr` 접속 시 `https://내아이디.github.io` 로 넘겨달라고 요청. 주소창에는 github.io 주소가 보이지만 학교 주소로 들어올 수 있습니다.
+- **대안 1: 리다이렉트(전달) 요청** — `ncdl.cau.ac.kr` 접속 시 `https://jungyeopoh.github.io/NCDL_homepage/` 로 넘겨달라고 요청. 주소창에는 github.io 주소가 보이지만 학교 주소로 들어올 수 있습니다.
 - **대안 2: 학과 홈페이지 교수 소개란에 링크** 등록.
 
 ---
 
 ## 4. 자주 하는 수정
 
-### 논문 추가
-`data/publications.yml` 의 `journal:` 바로 아래, **맨 위에** 복사해서 추가합니다.
+### 논문 추가·상태 변경 — 자동화 (휴대폰으로도 가능)
+
+GitHub 저장소의 **Issues → New issue** 에서 양식을 고르고 제출하면, 1~2분 안에 봇이 홈페이지를 고치고 결과를 댓글로 알려줍니다.
+GitHub 앱(휴대폰)에서도 똑같이 됩니다. **저장소 주인 계정으로 올린 것만** 처리됩니다.
+
+| 하고 싶은 것 | 양식 | 넣을 것 |
+| --- | --- | --- |
+| 게재된 논문 추가 | 📄 논문 추가 | 상태 `Published` + **DOI만** → 제목·저자·저널·권호·링크 자동, 번호 자동, News 자동 |
+| 준비 중·투고·심사 중 논문 추가 | 📄 논문 추가 | 상태 + 제목 + 저자 (+ 투고 저널) → Publications 맨 위 **In progress** 에 배지와 함께 표시 |
+| 상태 바꾸기 (투고 → 심사 중 → 수정 → 게재) | 🔄 논문 상태 변경 | 제목 일부 + 새 상태. `Published` + DOI 를 넣으면 Journal 목록으로 자동 이동 |
+
+- 상태 종류: `In preparation` → `Submitted` → `Under review` → `Revision` → `Accepted` → `Published`
+- 공동 1저자(†)·교신저자(*) 표시, IF 메모는 자동으로 알 수 없으니 필요하면 `data/publications.yml` 에서 다듬어 주세요.
+- 잘못 처리되면 봇이 이유를 댓글로 남깁니다. 이슈 본문을 Edit 으로 고친 뒤 댓글 `/retry`.
+- ⚠️ 저장소가 공개라 `publications.yml` 은 누구나 볼 수 있습니다. 투고 전 논문 제목은 공개해도 되는 수준으로 적으세요.
+
+### 새 논문 자동 확인 (매주 월요일)
+
+`data/site.yml` 의 `automation.orcid` 에 ORCID iD 를 넣으면, 매주 월요일 오전 OpenAlex 에서 교수님 논문을 검색해
+홈페이지에 없는 논문이 있으면 **"새 논문 후보" 이슈**를 만들어 알려줍니다. 이슈에 댓글로:
+
+- `/approve` → 전부 추가 · `/approve 1 3` → 골라서 추가 · `/ignore` → 앞으로 제외
+
+(Actions 탭 → Check new papers → Run workflow 로 바로 돌려볼 수도 있습니다.)
+
+### 직접 고치기
+
+`data/publications.yml` 의 `journal:` 바로 아래, **맨 위에** 복사해서 추가해도 됩니다.
 ```yaml
 journal:
   - no: 26
@@ -117,8 +138,7 @@ journal:
     link: "https://doi.org/10.xxxx/xxxxx"
     selected: true      # 홈 화면에 띄우고 싶을 때만
 ```
-- 교수 이름은 자동으로 굵게 표시됩니다.
-- MoS2, Bi2O2Se 같은 화학식 숫자는 자동으로 아래첨자로 바뀝니다.
+- 교수 이름은 자동으로 굵게, MoS2·Bi2O2Se 같은 화학식 숫자는 자동으로 아래첨자로 표시됩니다.
 - 학회 발표는 `conference:`, 특허는 `patents:` 에 같은 방식으로. 비어 있으면 탭이 자동으로 숨겨집니다.
 
 ### 학생 추가
@@ -148,6 +168,17 @@ ms:
 
 ### 모집 배너 끄기/켜기
 `data/site.yml` 에서 `recruiting: false` / `true`
+
+### 디자인 바꾸기 (색상·로고·첫 화면 사진)
+
+`data/site.yml` 의 `design:` 에서:
+```yaml
+design:
+  theme: "paper"       # paper (밝은 회녹색) / white (흰 바탕) / navy (남색 첫 화면)
+  logo: "logo.svg"     # images/ 폴더에 올린 로고 파일
+  hero_image: ""       # images/ 폴더에 올린 사진 → 홈 첫 화면 배경 (그래프 대신)
+```
+세부 색상은 `assets/css/style.css` 맨 위 `:root` 값으로 바꿀 수 있습니다.
 
 ### 메뉴 이름·순서 바꾸기
 `assets/js/site.js` 맨 위 `NAV` 목록을 수정합니다.

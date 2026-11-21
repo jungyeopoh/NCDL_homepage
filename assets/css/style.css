@@ -122,7 +122,8 @@ p { margin: 0 0 1em; }
 .hero .wrap { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: clamp(32px, 5vw, 72px); align-items: center; }
 
 .hero h1 {
-  font-size: clamp(2.5rem, 5.6vw, 4.6rem);
+  font-size: clamp(2.3rem, 4.7vw, 4.25rem);
+  overflow-wrap: normal;
   font-weight: 740;
   line-height: 0.98;
   letter-spacing: -0.025em;
@@ -383,3 +384,75 @@ sub { font-size: 0.72em; line-height: 0; vertical-align: -0.22em; }
 .pub-status[data-status="minor-revision"] { background: #efe6f7; color: #6a3d96; }
 .pub-status[data-status="accepted"]       { background: #e0f2e9; color: #1f6b45; }
 .in-progress .pub-no { visibility: hidden; }
+
+/* ==========================================================
+   Themes — data/site.yml 의 design.theme 로 선택
+   ========================================================== */
+
+.brand-logo { height: 36px; width: auto; }
+
+/* white: 흰 바탕, 또렷한 CAU 블루 */
+[data-theme="white"] {
+  --paper: #ffffff;
+  --tint: #edf2fa;
+  --rule: #e3e7ec;
+}
+[data-theme="white"] .section:nth-of-type(even) { background: #f7f9fc; }
+
+/* navy: 남색 첫 화면 + 웨이퍼 다이 격자 */
+[data-theme="navy"] {
+  --paper: #f5f7fa;
+  --navy: #0e2a57;
+  --navy-2: #133569;
+}
+[data-theme="navy"] .site-header { background: color-mix(in srgb, var(--navy) 94%, transparent); border-bottom-color: rgba(255,255,255,.08); }
+[data-theme="navy"] .site-header .brand,
+[data-theme="navy"] .nav a { color: #fff; }
+[data-theme="navy"] .brand-uni { color: rgba(255,255,255,.65); }
+[data-theme="navy"] .nav a:hover { background: rgba(255,255,255,.1); color: #fff; }
+[data-theme="navy"] .nav a[aria-current="page"] { color: #fff; box-shadow: inset 0 -2px 0 #8fb4ff; }
+[data-theme="navy"] .nav-toggle { color: #fff; border-color: rgba(255,255,255,.3); }
+[data-theme="navy"] .brand svg rect { fill: #fff; }
+[data-theme="navy"] .brand svg path { stroke: var(--navy); }
+@media (max-width: 920px) { [data-theme="navy"] .nav { background: var(--navy); } }
+
+[data-theme="navy"] .hero,
+[data-theme="navy"] .page-head {
+  background-color: var(--navy);
+  background-image:
+    radial-gradient(1200px 500px at 85% 40%, rgba(80,130,230,.28), transparent 60%),
+    linear-gradient(rgba(255,255,255,.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.045) 1px, transparent 1px);
+  background-size: auto, 44px 44px, 44px 44px;
+  border-bottom: 0;
+}
+[data-theme="navy"] .hero h1,
+[data-theme="navy"] .hero .lede,
+[data-theme="navy"] .page-head h1 { color: #fff; }
+[data-theme="navy"] .hero .sub,
+[data-theme="navy"] .hero .affil,
+[data-theme="navy"] .page-head p,
+[data-theme="navy"] .loop-figure figcaption { color: rgba(255,255,255,.72); }
+[data-theme="navy"] .loop-axis { stroke: rgba(255,255,255,.7); }
+[data-theme="navy"] .loop-tick,
+[data-theme="navy"] .loop-legend text { fill: rgba(255,255,255,.7); }
+[data-theme="navy"] .hero .btn-primary { background: #fff; color: var(--navy); border-color: #fff; }
+[data-theme="navy"] .hero .btn-primary:hover { background: #dfe8fb; }
+[data-theme="navy"] .hero .btn-ghost { color: #fff; border-color: rgba(255,255,255,.55); }
+[data-theme="navy"] .hero .btn-ghost:hover { background: rgba(255,255,255,.1); }
+[data-theme="navy"] .recruit { background: var(--navy-2); border-top: 1px solid rgba(255,255,255,.08); }
+[data-theme="navy"] .site-footer { background: var(--navy); color: rgba(255,255,255,.7); border-top: 0; margin-top: 0; }
+[data-theme="navy"] .site-footer strong { color: #fff; }
+[data-theme="navy"] .site-footer a { color: #b9cffc; }
+
+/* 홈 첫 화면 배경 사진 (design.hero_image) — 모든 테마 공통 */
+.hero.has-image {
+  background: linear-gradient(90deg, rgba(9,22,46,.9) 0%, rgba(9,22,46,.7) 50%, rgba(9,22,46,.25) 100%), var(--hero-photo) center / cover no-repeat;
+  padding: clamp(80px, 12vw, 160px) 0;
+}
+.hero.has-image .wrap { grid-template-columns: minmax(0, 1fr); }
+.hero.has-image .loop-figure { display: none; }
+.hero.has-image h1, .hero.has-image .lede { color: #fff; }
+.hero.has-image .sub, .hero.has-image .affil { color: rgba(255,255,255,.78); }
+.hero.has-image .btn-primary { background: #fff; color: var(--blue-ink); border-color: #fff; }
+.hero.has-image .btn-ghost { color: #fff; border-color: rgba(255,255,255,.6); }

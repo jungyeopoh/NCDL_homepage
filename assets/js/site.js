@@ -142,12 +142,19 @@ function glyph(kind, size = 56) {
 
 /* ---------- layout ---------- */
 
+function applyDesign(site) {
+  const d = site.design || {};
+  document.documentElement.dataset.theme = d.theme || "paper";
+}
+
 function renderChrome(site, page) {
+  const d = site.design || {};
+  const mark = has(d.logo) ? `<img class="brand-logo" src="images/${esc(d.logo)}" alt="">` : brandMark();
   const header = $("#site-header");
   header.className = "site-header";
   header.innerHTML = `<div class="wrap">
     <a class="brand" href="index.html" aria-label="${esc(site.lab_name)} home">
-      ${brandMark()}
+      ${mark}
       <span class="brand-text"><span class="brand-short">${esc(site.lab_short)}</span><span class="brand-uni">${esc(site.university)}</span></span>
     </a>
     <button class="nav-toggle" aria-expanded="false" aria-controls="nav">Menu</button>
@@ -191,7 +198,7 @@ const PAGES = {
     const selected = list(pubs.journal).filter((p) => p.selected).slice(0, 4);
     const latest = list(news).slice(0, 5);
     return `
-      <section class="hero"><div class="wrap">
+      <section class="hero${has(site.design?.hero_image) ? " has-image" : ""}"${has(site.design?.hero_image) ? ` style="--hero-photo:url('images/${esc(site.design.hero_image)}')"` : ""}><div class="wrap">
         <div>
           <p class="affil">${esc(site.school)}, ${esc(site.university)}</p>
           <h1>${esc(site.lab_name)}</h1>
@@ -427,6 +434,7 @@ function newsList(items) {
   main.innerHTML = `<div class="loading">Loading…</div>`;
   try {
     const site = await loadYaml("site");
+    applyDesign(site);
     renderChrome(site, page);
     const render = PAGES[page] || PAGES.home;
     main.innerHTML = await render(site);
