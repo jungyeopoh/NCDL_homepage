@@ -1,0 +1,273 @@
+# ─────────────────────────────────────────────
+#  논문·학회·특허 (Publications 페이지)
+#  - 새 논문은 해당 목록의 "맨 위"에 추가하세요 (최신순).
+#  - selected: true 로 표시한 논문은 홈 화면 "Selected publications"에 나옵니다 (3~4개 권장).
+#  - link 에 DOI 주소를 넣으면 제목이 링크가 됩니다. 예: https://doi.org/10.1002/adma.XXXXX
+#  - † = 공동 1저자, * = 교신저자. 교수 이름은 자동으로 굵게 표시됩니다.
+#  - 비어 있는 목록( [] )의 탭은 자동으로 숨겨집니다.
+# ─────────────────────────────────────────────
+
+# ── 진행 중인 논문 ─────────────────────────────
+#  Journal 탭 맨 위 "In progress"에 상태 배지와 함께 표시됩니다 (번호 없음).
+#  status 는 아래 중 하나를 그대로 쓰세요:
+#    In preparation / Submitted / Under review / Revision / Accepted
+#  게재되면 status 를 Published 로 바꾸는 대신, GitHub의 "논문 상태 변경" 양식을 쓰면
+#  자동으로 journal 목록 맨 위로 옮겨지고 번호·DOI·권호가 채워집니다 (README 4장).
+#  ⚠️ 저장소가 공개라서 여기 적은 내용은 누구나 볼 수 있습니다. 공개해도 되는 수준으로만 적으세요.
+#
+#  예시:
+#  - status: "Under review"
+#    title: "Memristor-based reservoir computing for ..."
+#    authors: "Gildong Hong†, Jungyeop Oh*"
+#    venue: "Nature Communications"     # 투고 저널 (비워두면 표시 안 됨)
+
+in_progress: []
+
+journal:
+  - no: 25
+    year: 2026
+    title: "Tailoring Synaptic Properties of the Band-Engineered Charge Trap Memory for a Flexible Edge Neuromorphic Processor"
+    authors: "Taehoon Kim†, Jungyeop Oh†, Hyeonji Lee†, Min-Kyu Shin, Jongseo Won, Woonggi Hong, Sung-Yool Choi*, Min Ju Kim*"
+    venue: "ACS Applied Materials & Interfaces"
+    detail: "18, 3, 5539 (2026)"
+    note: "IF 8.2, JCR top 20%"
+    link: ""
+    selected: true
+
+  - no: 24
+    year: 2026
+    title: "Feature-Selective Preprocessing with Electrically Robust Boron Nitride-Based Dynamic Memristors for Reliable Lightweight Neural Networks"
+    authors: "Wonbae Ahn†, Seungsun Yoo†, Kang Hyun Lee, Jungyeop Oh, Hyeonji Lee, Hyunmin Kim, Inseong Lee, Sejin Lee, Woonggi Hong, Sung-Yool Choi*"
+    venue: "ACS Nano"
+    detail: "20, 1, 1147 (2026)"
+    note: "IF 16.1, JCR top 10%"
+    link: ""
+
+  - no: 23
+    year: 2026
+    title: "Temporally Reconfigurable Reservoir Computing with Flexible Electrolyte-Gated TFTs for High-Performance Neuromorphic Processing"
+    authors: "Kang Hyun Lee†, Seohak Park†, Mingu Kang†, Jungyeop Oh, Wonbae Ahn, Hyeonji Lee, Seungsun Yoo, Hyunmin Kim, Min Kyu Lee, Sung-Yool Choi*"
+    venue: "Advanced Materials"
+    detail: "38, e07979 (2026)"
+    note: "IF 26.8, JCR top 5%"
+    link: ""
+
+  - no: 22
+    year: 2025
+    title: "A Reconfigurable Silicon Transistor for Noise-Resilient Stochastic Spiking Neural Networks"
+    authors: "Ho-Young Maeng†, Hyeonji Lee†, Sang-Won Lee, Jungyeop Oh, Hae-Yeon Kim, Sung-Yool Choi*, Yang-Kyu Choi*"
+    venue: "ACS Nano"
+    detail: "19, 39407 (2025)"
+    note: "IF 16.1, JCR top 10%"
+    link: ""
+
+  - no: 21
+    year: 2025
+    title: "Quantized-memristor-enabled generative AI for predictive skin laser treatment imaging"
+    authors: "Namju Kim†, Jun-Hwe Cha†, Yeong Kwon Kim, Jungyeop Oh, Inyong Kim, Minkyu Jeong, Junhwan Choi, Byung Chul Jang*"
+    venue: "Device"
+    detail: "3, 100908 (2025)"
+    note: "IF 8.0, JCR top 20%"
+    link: ""
+
+  - no: 20
+    year: 2025
+    title: "Enhancing Computing Capacity via Reconfigurable MoS2-Based Artificial Synapse with Dual Feature Strategy for Wide Reservoir Computing"
+    authors: "Hyeonji Lee†, Jungyeop Oh†, Wonbae Ahn, Mingu Kang, Seohak Park, Hyunmin Kim, Seungsun Yoo, Byung Chul Jang, Sung-Yool Choi*"
+    venue: "Advanced Functional Materials"
+    detail: "35, 2416811 (2025)"
+    note: "IF 19.0, JCR top 5%"
+    link: ""
+    selected: true
+
+  - no: 19
+    year: 2025
+    title: "Low-Temperature Chemical Solution Deposition of Bi2O2Se on Amorphous Surface for Dynamic Memristor of Physical Reservoir Array"
+    authors: "Ayoung Ham†, Wonbae Ahn†, Jungyeop Oh, Gichang Noh, Saeyoung Oh, Minsoo Kang, Hyun-Jun Chai, Joon Young Kwak, Seunghwan Seo*, Sung-Yool Choi*, Kibum Kang*"
+    venue: "ACS Nano"
+    detail: "19, 5406–5417 (2025)"
+    note: "IF 16.1, JCR top 10%"
+    link: ""
+
+  - no: 18
+    year: 2025
+    title: "Selective and local flash-annealing for improvement in the contact characteristics of MoS2 transistors"
+    authors: "Jun-Hwe Cha†, Inseong Lee†, Seol Won Yun†, Woonggi Hong, Hyo Hoon Byeon, Jungyeop Oh, Seohak Park, Sung-Yool Choi*"
+    venue: "Nanoscale"
+    detail: "17, 11305 (2025)"
+    note: "IF 5.1, JCR top 25%"
+    link: ""
+
+  - no: 17
+    year: 2025
+    title: "Highly Reliable Bi2O2Se Dendritic Neuron Enabling Spatial-Temporal Signal Processing for Real-World Image Classification"
+    authors: "Jungyeop Oh†, Wonbae Ahn†, Ayoung Ham†, Hyeonji Lee, Sejin Lee, Jun-Hwe Cha, Seunghwan Seo, Kibum Kang*, Sung-Yool Choi*"
+    venue: "ACS Nano"
+    detail: "19, 638–648 (2025)"
+    note: "IF 16.1, JCR top 10%"
+    link: ""
+    selected: true
+
+  - no: 16
+    year: 2025
+    title: "Crystallinity-Controlled Hexagonal Boron Nitride-Based Memristors for Fully Integrated Reservoir Computing Processors"
+    authors: "Wonbae Ahn†, Sejin Lee†, Jungyeop Oh†, Hyeonji Lee, Sung-Yool Choi*"
+    venue: "Advanced Materials"
+    detail: "37, 2413640 (2025)"
+    note: "IF 26.8, JCR top 5%"
+    link: ""
+    selected: true
+
+  - no: 15
+    year: 2024
+    title: "Ultrathin All-Solid-State MoS2-Based Electrolyte Gated Synaptic Transistor with Tunable Organic–Inorganic Hybrid Film"
+    authors: "Jungyeop Oh†, Seohak Park†, Sang Hun Lee†, Sungkyu Kim, Hyeonji Lee, Changhyeon Lee, Woonggi Hong, Jun-Hwe Cha, Mingu Kang, Jun Hyup Jin, Sung Gap Im, Min Ju Kim*, Sung-Yool Choi*"
+    venue: "Advanced Science"
+    detail: "11, 2308847 (2024)"
+    note: "IF 14.1, JCR top 10%"
+    link: ""
+
+  - no: 14
+    year: 2024
+    title: "Realistic Chest X-Ray Image Synthesis via Generative Network with Stochastic Memristor Array for Machine Learning-Based Medical Diagnosis"
+    authors: "Namju Kim†, Jungyeop Oh†, Sungkyu Kim, Jun-Hwe Cha, Junhwan Choi, Sung Gap Im, Sung-Yool Choi*, Byung Chul Jang*"
+    venue: "Advanced Functional Materials"
+    detail: "34, 2305136 (2024)"
+    note: "IF 19.0, JCR top 5%"
+    link: ""
+
+  - no: 13
+    year: 2024
+    title: "Bi-directional threshold voltage shift of amorphous InGaZnO thin film transistors under alternating bias stress"
+    authors: "Hyunjin Kim, Beom Jung Kim, Jungyeop Oh, Sung-Yool Choi, Hamin Park*"
+    venue: "Semiconductor Science and Technology"
+    detail: "39, 025011 (2024)"
+    note: ""
+    link: ""
+
+  - no: 12
+    year: 2023
+    title: "A Highly Reliable Molybdenum Disulfide-Based Synaptic Memristor Using a Copper Migration-Controlled Structure"
+    authors: "Wonbae Ahn, Han Beom Jeong, Jungyeop Oh, Woonggi Hong, Jun-Hwe Cha, Hu Young Jeong, Sung-Yool Choi*"
+    venue: "Small"
+    detail: "19, 2300223 (2023)"
+    note: "IF 12.1, JCR top 10%"
+    link: ""
+
+  - no: 11
+    year: 2023
+    title: "Preventing Vanishing Gradient Problem of Hardware Neuromorphic System by Implementing Imidazole-Based Memristive ReLU Activation Neuron"
+    authors: "Jungyeop Oh†, Sungkyu Kim†, Changhyeon Lee, Jun-Hwe Cha, Sang Yoon Yang, Sung Gap Im, Cheolmin Park, Byung Chul Jang*, Sung-Yool Choi*"
+    venue: "Advanced Materials"
+    detail: "35, 2300023 (2023)"
+    note: "IF 26.8, JCR top 5%"
+    link: ""
+
+  - no: 10
+    year: 2023
+    title: "Bias Temperature Instability of a-IGZO TFTs Under Repeated Stress and Recovery"
+    authors: "Yonghee Jeong, Hyunjin Kim, Jungyeop Oh, Sung-Yool Choi, Hamin Park*"
+    venue: "Journal of Electronic Materials"
+    detail: "52 (2023)"
+    note: ""
+    link: ""
+
+  - no: 9
+    year: 2023
+    title: "Turn-around of threshold voltage shift in amorphous InGaZnO TFT under positive bias illumination stress"
+    authors: "Juwon Kim, Hyunjin Kim, Jungyeop Oh, Sung-Yool Choi, Hamin Park*"
+    venue: "Solid-State Electronics"
+    detail: "201, 108605 (2023)"
+    note: ""
+    link: ""
+
+  - no: 8
+    year: 2023
+    title: "A novel structured single device neuron for low standby power and compact system application"
+    authors: "Gyusoup Lee, Jungyeop Oh, Eui Joong Shin, Seongho Kim, Youngkeun Park, Min Ju Kim, Sung-Yool Choi, Byung Jin Cho*"
+    venue: "IEEE Electron Device Letters"
+    detail: "44, 528 (2023)"
+    note: ""
+    link: ""
+
+  - no: 7
+    year: 2023
+    title: "Imidazole-based artificial synapses for neuromorphic computing: a cluster-type conductive filament via controllable nanocluster nucleation"
+    authors: "Jungyeop Oh†, Sang Yoon Yang†, Sungkyu Kim, Changhyeon Lee, Jun-Hwe Cha, Byung Chul Jang, Sung Gap Im, Sung-Yool Choi*"
+    venue: "Materials Horizons"
+    detail: "10, 2035 (2023)"
+    note: "IF 13.3, JCR top 10%"
+    link: ""
+
+  - no: 6
+    year: 2022
+    title: "Memristor-based security primitives robust to malicious attacks for highly secure neuromorphic systems"
+    authors: "Jungyeop Oh†, Sungkyu Kim†, Junhwan Choi, Jun-Hwe Cha, Sung Gap Im, Byung Chul Jang*, Sung-Yool Choi*"
+    venue: "Advanced Intelligent Systems"
+    detail: "4, 2200177 (2022)"
+    note: "IF 7.3, JCR top 20%"
+    link: ""
+
+  - no: 5
+    year: 2022
+    title: "Highly reliable synaptic cell array based on organic–inorganic hybrid bilayer stack toward precise offline learning"
+    authors: "Jun-Hwe Cha†, Byung Chul Jang†, Jungyeop Oh, Changhyeon Lee, Sang Yoon Yang, Hamin Park, Sung Gap Im, Sung-Yool Choi*"
+    venue: "Advanced Intelligent Systems"
+    detail: "4, 2200018 (2022)"
+    note: "IF 7.3, JCR top 20%"
+    link: ""
+
+  - no: 4
+    year: 2021
+    title: "A vertical silicon nanowire based single transistor neuron with excitatory, inhibitory, and myelination functions for highly scalable neuromorphic hardware"
+    authors: "Joon-Kyu Han, Jungyeop Oh, Ji-Man Yu, Sung-Yool Choi, Yang-Kyu Choi*"
+    venue: "Small"
+    detail: "17, 2103775 (2021)"
+    note: "IF 12.1, JCR top 10%"
+    link: ""
+
+  - no: 3
+    year: 2021
+    title: "Cointegration of single-transistor neurons and synapses by nanoscale CMOS fabrication for highly scalable neuromorphic hardware"
+    authors: "Joon-Kyu Han, Jungyeop Oh, Gyeong-Jun Yun, Dongeun Yoo, Myung-Su Kim, Ji-Man Yu, Sung-Yool Choi, Yang-Kyu Choi*"
+    venue: "Science Advances"
+    detail: "7, eabg8836 (2021)"
+    note: "IF 14.1, JCR top 10%"
+    link: ""
+
+  - no: 2
+    year: 2020
+    title: "Conductive-bridging random-access memories for emerging neuromorphic computing"
+    authors: "Jun-Hwe Cha†, Sang Yoon Yang†, Jungyeop Oh†, Shinhyun Choi, Sangsu Park, Byung Chul Jang, Wonbae Ahn, Sung-Yool Choi*"
+    venue: "Nanoscale"
+    detail: "12, 14339 (2020)"
+    note: "IF 7.8, JCR top 20%"
+    link: ""
+
+  - no: 1
+    year: 2019
+    title: "Polymer analog memristive synapse with atomic-scale conductive filament for flexible neuromorphic computing system"
+    authors: "Byung Chul Jang†, Sungkyu Kim†, Sang Yoon Yang†, Jihun Park, Jun-Hwe Cha, Jungyeop Oh, Junhwan Choi, Sung Gap Im, Vinayak P Dravid, Sung-Yool Choi*"
+    venue: "Nano Letters"
+    detail: "19, 839 (2019)"
+    note: "IF 11.2, JCR top 10%"
+    link: ""
+
+# 학회 발표 예시 (type: Oral / Poster / Invited)
+#  - no: 1
+#    year: 2026
+#    title: "발표 제목"
+#    authors: "Gildong Hong, Jungyeop Oh*"
+#    venue: "IEEE International Electron Devices Meeting (IEDM)"
+#    detail: "San Francisco, USA, Dec. 2026"
+#    type: "Oral"
+conference: []
+
+# 특허 예시
+#  - no: 1
+#    year: 2026
+#    title: "특허 명칭"
+#    authors: "오정엽, 홍길동"
+#    venue: "KR Patent 10-XXXX-XXXXXXX"
+#    detail: "Registered, 2026"
+patents: []

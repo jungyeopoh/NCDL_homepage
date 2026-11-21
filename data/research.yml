@@ -1,0 +1,77 @@
+# ─────────────────────────────────────────────
+#  연구 분야 (Research 페이지, 홈 화면 요약)
+#  - image: images/research/ 폴더에 그림을 올리고 파일명 입력 (가로 1200px 내외 권장).
+#           비워두면 기본 아이콘이 표시됩니다.
+#  - papers: 대표 논문 번호 (publications.yml 의 journal 번호)
+#  - 아래 설명은 기존 논문 제목을 바탕으로 작성한 초안입니다. 자유롭게 고쳐 쓰세요.
+# ─────────────────────────────────────────────
+
+- id: neuromorphic
+  icon: spikes
+  title: "Neuromorphic Computing"
+  title_ko: "뉴로모픽 컴퓨팅"
+  summary: "Hardware that learns and infers like the brain, built from artificial synapses and neurons."
+  description: >-
+    Conventional computers shuttle data back and forth between memory and
+    processor, and that traffic now dominates the energy cost of AI. We build
+    neuromorphic hardware in which memory and computation happen in the same
+    place. Our work covers memristive synapses with precise analog weight
+    updates, artificial neurons that implement activation functions such as
+    ReLU and dendritic integration in a single device, and physical reservoir
+    computing systems that use the intrinsic dynamics of devices to process
+    time-series data. We also explore stochastic devices for spiking neural
+    networks and generative models.
+  keywords:
+    - "Memristive synapse"
+    - "Artificial neuron"
+    - "Reservoir computing"
+    - "Spiking neural network"
+    - "In-memory computing"
+  image: ""
+  papers: [23, 20, 17, 11]
+
+- id: memory
+  icon: hysteresis
+  title: "Next-generation Memory Device"
+  title_ko: "차세대 메모리 소자"
+  summary: "Reliable, low-power memories from 2D semiconductors, hybrid films, and charge-trap stacks."
+  description: >-
+    The performance of neuromorphic and edge AI systems depends on the memory
+    devices underneath them. We design resistive switching memories (RRAM and
+    CBRAM), charge trap memories, and electrolyte-gated synaptic transistors
+    using two-dimensional materials such as MoS2, hexagonal boron nitride, and
+    Bi2O2Se, as well as organic–inorganic hybrid dielectrics. Our focus is on
+    controlling the switching mechanism at the atomic scale, through
+    conductive-filament engineering, band engineering, and crystallinity
+    control, so that devices are uniform, reliable, and ready for large arrays.
+  keywords:
+    - "RRAM / CBRAM"
+    - "Charge trap memory"
+    - "2D materials"
+    - "Electrolyte-gated transistor"
+    - "Reliability"
+  image: ""
+  papers: [25, 16, 15, 12]
+
+- id: process
+  icon: layers
+  title: "Advanced Semiconductor Process"
+  title_ko: "첨단 반도체 공정"
+  summary: "Low-temperature, flexible, and CMOS-compatible processes that take new devices from lab to chip."
+  description: >-
+    New devices only matter if they can be made at scale. We develop
+    fabrication processes that bring emerging materials onto practical
+    platforms: low-temperature solution deposition of 2D semiconductors on
+    amorphous substrates, local flash annealing for low-resistance contacts,
+    vapor-deposited polymer and hybrid thin films, and processes compatible
+    with flexible substrates and nanoscale CMOS. We also study the long-term
+    reliability of oxide thin-film transistors under electrical and optical
+    stress.
+  keywords:
+    - "Low-temperature process"
+    - "Contact engineering"
+    - "Flexible electronics"
+    - "CMOS integration"
+    - "Oxide TFT reliability"
+  image: ""
+  papers: [19, 18, 3, 13]

@@ -1,0 +1,32 @@
+# ─────────────────────────────────────────────
+#  소식 (News 페이지, 홈 화면에는 최신 5개)
+#  - 새 소식은 "맨 위"에 추가하세요.
+#  - date 는 자유 형식 (예: 2026.11.21 / 2026.11 / 2026)
+#  - tag 예시: Paper, Award, Event, Lab, Grant
+#  - text 안에 링크: <a href="https://...">링크 글자</a>
+#  - 날짜는 논문 정보로 추정한 값이니 정확한 날짜로 고쳐 주세요.
+# ─────────────────────────────────────────────
+
+- date: "2026.01"
+  tag: "Paper"
+  text: "Our paper on band-engineered charge trap memory for flexible edge neuromorphic processors was published in <em>ACS Applied Materials &amp; Interfaces</em>."
+
+- date: "2026.01"
+  tag: "Paper"
+  text: "Boron nitride-based dynamic memristors for feature-selective preprocessing were published in <em>ACS Nano</em>."
+
+- date: "2026"
+  tag: "Paper"
+  text: "Temporally reconfigurable reservoir computing with flexible electrolyte-gated TFTs was published in <em>Advanced Materials</em>."
+
+- date: "2025"
+  tag: "Paper"
+  text: "A reconfigurable silicon transistor for noise-resilient stochastic spiking neural networks was published in <em>ACS Nano</em>."
+
+- date: "2025"
+  tag: "Lab"
+  text: "NCDL opened at the School of Integrative Engineering, Chung-Ang University. Prof. Jungyeop Oh joined as Assistant Professor."
+
+- date: "2025"
+  tag: "Paper"
+  text: "Our hexagonal boron nitride memristors for fully integrated reservoir computing processors were published in <em>Advanced Materials</em>."

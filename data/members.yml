@@ -1,0 +1,65 @@
+# ─────────────────────────────────────────────
+#  구성원 (People 페이지)
+#  - 사진: images/people/ 폴더에 올리고 photo 에 파일명 입력 (정사각형 권장, 600x600)
+#  - 사진이 없으면 이름 이니셜이 자동으로 표시됩니다.
+#  - 비어 있는 그룹( [] )은 페이지에 표시되지 않습니다.
+# ─────────────────────────────────────────────
+
+professor:
+  name: "Jungyeop Oh"
+  name_ko: "오정엽"
+  title: "Assistant Professor"
+  affiliation: "School of Integrative Engineering, Chung-Ang University"
+  photo: ""              # 예: jungyeop-oh.jpg
+  email: "jungyeopoh@cau.ac.kr"
+  phone: "+82-2-820-5559"
+  office: "Room 903, Building 305"
+  bio: >-
+    Jungyeop Oh is an Assistant Professor in the School of Integrative
+    Engineering at Chung-Ang University. He received his Ph.D. in Electrical
+    Engineering from KAIST in 2024, where he worked on memristive synapses,
+    artificial neurons, and reservoir computing hardware built on
+    two-dimensional and organic–inorganic hybrid materials. Before joining
+    Chung-Ang University in 2025, he was a Research Staff Member at the Samsung
+    Advanced Institute of Technology. His research spans neuromorphic
+    computing, next-generation memory devices, and advanced semiconductor
+    processes.
+  education:
+    - years: "2018 – 2024"
+      text: "Ph.D. in Electrical Engineering, KAIST"
+    - years: "2014 – 2018"
+      text: "B.S. in Physics, GIST"
+  career:
+    - years: "2025 – present"
+      text: "Assistant Professor, School of Integrative Engineering, Chung-Ang University"
+    - years: "2024 – 2025"
+      text: "Research Staff Member, Samsung Advanced Institute of Technology (SAIT)"
+  # 수상/학회 활동 등. 비워두면 표시 안 됨
+  honors: []
+  #  - years: "2023"
+  #    text: "Best Paper Award, OOO Conference"
+
+# 아래 그룹들에 학생을 추가하세요. 예시:
+#  - name: "Gildong Hong"
+#    name_ko: "홍길동"
+#    photo: "gildong-hong.jpg"
+#    email: "gildong@cau.ac.kr"
+#    since: "2026"
+#    education: "B.S. Electrical Engineering, Chung-Ang University"
+#    interests: "Memristor, Reservoir computing"
+
+postdocs: []
+
+phd: []
+
+integrated: []     # 석박통합과정
+
+ms: []
+
+interns: []        # 학부연구생
+
+# 졸업생 예시:
+#  - name: "Gildong Hong"
+#    degree: "M.S. 2027"
+#    now: "Samsung Electronics"
+alumni: []

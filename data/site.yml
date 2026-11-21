@@ -1,0 +1,45 @@
+# ─────────────────────────────────────────────
+#  연구실 기본 정보 (모든 페이지 상단/하단에 쓰임)
+#  수정 후 Commit 하면 1~2분 뒤 사이트에 반영됩니다.
+# ─────────────────────────────────────────────
+
+lab_name: "Neuromorphic Computing & Device Lab"
+lab_short: "NCDL"
+lab_name_ko: "뉴로모픽 컴퓨팅 및 소자 연구실"
+
+university: "Chung-Ang University"
+school: "School of Integrative Engineering"
+college: "College of ICT Engineering"
+university_ko: "중앙대학교 ICT공과대학 융합공학부"
+
+# 홈 화면 첫 문장
+tagline: "We build memory devices and circuits that compute the way the brain does."
+intro: >-
+  NCDL develops next-generation AI semiconductor technology, from new device
+  materials and fabrication processes to neuromorphic hardware that learns and
+  infers at a fraction of the energy of conventional computers.
+
+# 모집 공고 (홈 화면 띠 배너). 모집하지 않을 때는 recruiting: false
+recruiting: true
+recruiting_text: "We are recruiting M.S., Ph.D., and integrated M.S.–Ph.D. students, and undergraduate interns."
+
+# 교수 이름 표기 (논문 저자 목록에서 굵게 표시할 이름들)
+highlight_authors:
+  - "Jungyeop Oh"
+
+contact:
+  pi: "Prof. Jungyeop Oh"
+  email: "jungyeopoh@cau.ac.kr"
+  phone: "+82-2-820-5559"
+  office: "Room 903, Building 305"
+  address: "84 Heukseok-ro, Dongjak-gu, Seoul 06974, Republic of Korea"
+  address_ko: "(06974) 서울특별시 동작구 흑석로 84 중앙대학교 305관 903호"
+  # 연구실(학생실) 위치가 따로 있으면 적어 주세요. 비워두면 표시 안 됨
+  lab_room: ""
+  # 지도에 찍을 검색어
+  map_query: "중앙대학교 305관"
+
+links:
+  google_scholar: ""   # 예: https://scholar.google.com/citations?user=XXXX
+  orcid: ""
+  cau_faculty_page: ""

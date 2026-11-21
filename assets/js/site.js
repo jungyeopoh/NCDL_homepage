@@ -1,0 +1,444 @@
+/* ==========================================================
+   NCDL site renderer
+   내용은 data/*.yml 파일에서 읽어옵니다. 보통은 이 파일을 고칠 필요가 없습니다.
+   메뉴를 바꾸려면 아래 NAV 목록만 수정하세요.
+   ========================================================== */
+
+const NAV = [
+  { id: "home",         label: "Home",         href: "index.html" },
+  { id: "people",       label: "People",       href: "people.html" },
+  { id: "research",     label: "Research",     href: "research.html" },
+  { id: "publications", label: "Publications", href: "publications.html" },
+  { id: "news",         label: "News",         href: "news.html" },
+  { id: "join",         label: "Join us",      href: "join.html" },
+  { id: "contact",      label: "Contact",      href: "contact.html" },
+];
+
+/* ---------- helpers ---------- */
+
+const $ = (sel, root = document) => root.querySelector(sel);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const list = (v) => (Array.isArray(v) ? v : []);
+const has = (v) => v !== undefined && v !== null && String(v).trim() !== "";
+
+async function loadYaml(name) {
+  const res = await fetch(`data/${name}.yml`, { cache: "no-cache" });
+  if (!res.ok) throw new Error(`data/${name}.yml 파일을 불러오지 못했습니다 (HTTP ${res.status}).`);
+  const text = await res.text();
+  try {
+    return jsyaml.load(text);
+  } catch (e) {
+    const err = new Error(`data/${name}.yml 파일의 형식에 오류가 있습니다: ${e.reason || e.message}` + (e.mark ? ` (${e.mark.line + 1}번째 줄)` : ""));
+    err.yaml = true;
+    throw err;
+  }
+}
+
+// MoS2, Bi2O2Se 같은 화학식의 숫자를 아래첨자로 표시
+function chem(html) {
+  return String(html ?? "").replace(/\b((?:[A-Z][a-z]?\d*){2,})\b/g, (tok) =>
+    /\d/.test(tok) ? tok.replace(/([A-Za-z])(\d+)/g, "$1<sub>$2</sub>") : tok);
+}
+
+function initials(name) {
+  return String(name || "?").split(/\s+/).filter(Boolean).map((w) => w[0]).slice(0, 2).join("").toUpperCase();
+}
+
+function avatar(p, folder = "images/people/") {
+  if (has(p.photo)) return `<div class="avatar"><img src="${folder}${esc(p.photo)}" alt="${esc(p.name)}" loading="lazy"></div>`;
+  return `<div class="avatar" aria-hidden="true">${esc(initials(p.name))}</div>`;
+}
+
+function boldAuthors(authors, names) {
+  let out = esc(authors);
+  list(names).forEach((n) => {
+    const safe = esc(n).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    out = out.replace(new RegExp(`(${safe}[†*]*)`, "g"), "<strong>$1</strong>");
+  });
+  return out;
+}
+
+function pubItem(p, site, opts = {}) {
+  const title = has(p.link) ? `<a href="${esc(p.link)}" target="_blank" rel="noopener">${chem(esc(p.title))}</a>` : chem(esc(p.title));
+  const type = has(p.type) ? `<span class="pub-type">${esc(p.type)}</span>` : "";
+  const note = has(p.note) && !opts.compact ? `<span class="pub-note">${esc(p.note)}</span>` : "";
+  const status = has(p.status) ? `<span class="pub-status" data-status="${esc(String(p.status).toLowerCase().replace(/[^a-z]+/g, "-"))}">${esc(p.status)}</span>` : "";
+  const venue = has(p.venue) || has(p.detail)
+    ? `<div class="pub-venue">${has(p.venue) ? `<em>${esc(p.venue)}</em>` : ""}${has(p.venue) && has(p.detail) ? ", " : ""}${has(p.detail) ? esc(p.detail) : ""}${note}</div>` : "";
+  return `<li class="pub">
+    <div class="pub-no">${esc(p.no ?? "")}</div>
+    <div>
+      ${status}<div class="pub-title">${title}${type}</div>
+      ${has(p.authors) ? `<div class="pub-authors">${boldAuthors(p.authors, site.highlight_authors)}</div>` : ""}
+      ${venue}
+    </div>
+  </li>`;
+}
+
+/* ---------- figures (SVG) ---------- */
+
+// Pinched hysteresis loop of a memristor: I = G(w)·V, w follows ∫V dt.
+function loopPoints(amp, cx, cy, rx, ry, iMax) {
+  const pts = [];
+  const N = 220;
+  for (let k = 0; k <= N; k++) {
+    const t = (k / N) * Math.PI * 2;
+    const v = Math.sin(t);
+    const w = amp * (1 - Math.cos(t)) / 2;
+    const g = 0.12 + 0.88 * w;
+    const i = (g * v) / iMax;
+    pts.push(`${(cx + v * rx).toFixed(1)},${(cy - i * ry).toFixed(1)}`);
+  }
+  return "M" + pts.join("L");
+}
+
+function heroLoop() {
+  const W = 520, H = 420, cx = W / 2, cy = H / 2, rx = 210, ry = 170;
+  const amps = [1, 0.55, 0.26];
+  const iMax = 0.12 + 0.88 * 0.85; // ≈ peak current of the widest loop
+  const paths = amps.map((a, n) =>
+    `<path class="loop-path" pathLength="1" stroke="url(#film${n})" d="${loopPoints(a, cx, cy, rx, ry, iMax)}"/>`
+  ).join("");
+  const grads = [
+    ["--film-1", "--film-2", "--film-3"],
+    ["--film-3", "--film-4"],
+    ["--film-4", "--film-5"],
+  ].map((stops, n) => `<linearGradient id="film${n}" x1="0" y1="1" x2="1" y2="0">${stops
+    .map((s, j) => `<stop offset="${stops.length === 1 ? 0 : j / (stops.length - 1)}" stop-color="var(${s})"/>`).join("")}</linearGradient>`).join("");
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-labelledby="loopTitle">
+    <title id="loopTitle">Current–voltage curves of a memristor at three frequencies, each forming a loop pinched at the origin</title>
+    <defs>${grads}</defs>
+    <line class="loop-axis" x1="20" y1="${cy}" x2="${W - 20}" y2="${cy}"/>
+    <line class="loop-axis" x1="${cx}" y1="14" x2="${cx}" y2="${H - 14}"/>
+    <text class="loop-tick" x="${W - 18}" y="${cy - 10}" text-anchor="end">V</text>
+    <text class="loop-tick" x="${cx + 10}" y="26">I</text>
+    ${paths}
+    <g class="loop-legend">
+      <text x="${W - 20}" y="${H - 44}" text-anchor="end">low frequency: wide loop</text>
+      <text x="${W - 20}" y="${H - 24}" text-anchor="end">high frequency: loop collapses</text>
+    </g>
+  </svg>`;
+}
+
+function brandMark(size = 34) {
+  const d = loopPoints(1, 20, 20, 15, 13, 0.12 + 0.88 * 0.85);
+  return `<svg width="${size}" height="${size}" viewBox="0 0 40 40" aria-hidden="true">
+    <rect x="0.5" y="0.5" width="39" height="39" rx="9" fill="var(--blue)"/>
+    <path d="${d}" fill="none" stroke="#fff" stroke-width="2.4" stroke-linejoin="round"/>
+  </svg>`;
+}
+
+function glyph(kind, size = 56) {
+  const s = `width="${size}" height="${size}" viewBox="0 0 56 56" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="glyph"`;
+  if (kind === "spikes") {
+    return `<svg ${s}><path d="M4 40h8l3-28 3 28h8l3-20 3 20h8l3-28 3 28h4"/><path d="M4 48h48" opacity=".35"/></svg>`;
+  }
+  if (kind === "layers") {
+    return `<svg ${s}><path d="M28 8 50 18 28 28 6 18z"/><path d="M6 27l22 10 22-10" opacity=".7"/><path d="M6 36l22 10 22-10" opacity=".45"/></svg>`;
+  }
+  // hysteresis
+  return `<svg ${s}><path d="M6 28h44M28 6v44" opacity=".35"/><path d="${loopPoints(1, 28, 28, 21, 19, 0.12 + 0.88 * 0.85)}"/></svg>`;
+}
+
+/* ---------- layout ---------- */
+
+function renderChrome(site, page) {
+  const header = $("#site-header");
+  header.className = "site-header";
+  header.innerHTML = `<div class="wrap">
+    <a class="brand" href="index.html" aria-label="${esc(site.lab_name)} home">
+      ${brandMark()}
+      <span class="brand-text"><span class="brand-short">${esc(site.lab_short)}</span><span class="brand-uni">${esc(site.university)}</span></span>
+    </a>
+    <button class="nav-toggle" aria-expanded="false" aria-controls="nav">Menu</button>
+    <nav class="nav" id="nav" aria-label="Main"><ul>
+      ${NAV.map((n) => `<li><a href="${n.href}"${n.id === page ? ' aria-current="page"' : ""}>${n.label}</a></li>`).join("")}
+    </ul></nav>
+  </div>`;
+  const btn = $(".nav-toggle", header), nav = $("#nav", header);
+  btn.addEventListener("click", () => {
+    const open = nav.classList.toggle("open");
+    btn.setAttribute("aria-expanded", open);
+    btn.textContent = open ? "Close" : "Menu";
+  });
+
+  const c = site.contact || {};
+  const footer = $("#site-footer");
+  footer.className = "site-footer";
+  footer.innerHTML = `<div class="wrap">
+    <div>
+      <p><strong>${esc(site.lab_name)}</strong></p>
+      <p>${esc(site.school)}, ${esc(site.college)}, ${esc(site.university)}</p>
+      <p>${esc(c.office)}, ${esc(c.address)}</p>
+    </div>
+    <div>
+      <p><a href="mailto:${esc(c.email)}">${esc(c.email)}</a></p>
+      <p>${esc(c.phone)}</p>
+      <p>© ${new Date().getFullYear()} ${esc(site.lab_short)}</p>
+    </div>
+  </div>`;
+}
+
+function pageHead(title, text) {
+  return `<section class="page-head"><div class="wrap"><h1>${esc(title)}</h1>${has(text) ? `<p>${text}</p>` : ""}</div></section>`;
+}
+
+/* ---------- pages ---------- */
+
+const PAGES = {
+  async home(site) {
+    const [research, news, pubs] = await Promise.all([loadYaml("research"), loadYaml("news"), loadYaml("publications")]);
+    const selected = list(pubs.journal).filter((p) => p.selected).slice(0, 4);
+    const latest = list(news).slice(0, 5);
+    return `
+      <section class="hero"><div class="wrap">
+        <div>
+          <p class="affil">${esc(site.school)}, ${esc(site.university)}</p>
+          <h1>${esc(site.lab_name)}</h1>
+          <p class="lede">${esc(site.tagline)}</p>
+          <p class="sub">${esc(site.intro)}</p>
+          <div class="actions">
+            <a class="btn btn-primary" href="research.html">Explore our research</a>
+            <a class="btn btn-ghost" href="join.html">Join the lab</a>
+          </div>
+        </div>
+        <figure class="loop-figure">
+          ${heroLoop()}
+          <figcaption>A memristor's current traces a loop pinched at zero that shrinks as the drive frequency rises. This memory of past signals is what lets a single device act as a synapse.</figcaption>
+        </figure>
+      </div></section>
+
+      ${site.recruiting ? `<section class="recruit" aria-label="Recruitment"><div class="wrap">
+        <p>${esc(site.recruiting_text)}</p><a href="join.html">How to apply</a>
+      </div></section>` : ""}
+
+      <section class="section"><div class="wrap">
+        <div class="section-head"><h2>Research</h2><a href="research.html">All research topics</a></div>
+        <ul class="topic-rows">
+          ${list(research).map((r) => `<li><a href="research.html#${esc(r.id)}">
+            ${glyph(r.icon)}
+            <h3>${esc(r.title)}</h3>
+            <p>${esc(r.summary)}</p>
+          </a></li>`).join("")}
+        </ul>
+      </div></section>
+
+      <section class="section"><div class="wrap split">
+        <div>
+          <div class="section-head"><h2>News</h2><a href="news.html">All news</a></div>
+          ${newsList(latest)}
+        </div>
+        <div>
+          <div class="section-head"><h2>Selected publications</h2><a href="publications.html">All publications</a></div>
+          <ul class="pub-list">${selected.map((p) => pubItem(p, site, { compact: true })).join("")}</ul>
+        </div>
+      </div></section>`;
+  },
+
+  async people(site) {
+    const m = await loadYaml("members");
+    const p = m.professor || {};
+    const cvBlock = (title, items) => list(items).length ? `<div><h3>${title}</h3><ul>${list(items).map((e) =>
+      `<li><span class="yrs">${esc(e.years)}</span><span>${esc(e.text)}</span></li>`).join("")}</ul></div>` : "";
+
+    const groups = [
+      ["postdocs", "Postdoctoral researchers"],
+      ["phd", "Ph.D. students"],
+      ["integrated", "Integrated M.S.–Ph.D. students"],
+      ["ms", "M.S. students"],
+      ["interns", "Undergraduate interns"],
+    ];
+    const anyStudents = groups.some(([k]) => list(m[k]).length);
+    const groupHtml = groups.filter(([k]) => list(m[k]).length).map(([k, label]) => `
+      <section class="group"><h2>${label}</h2><div class="people-grid">
+        ${list(m[k]).map((s) => `<article class="person">
+          ${avatar(s)}
+          <h3>${esc(s.name)}</h3>
+          ${has(s.name_ko) ? `<div class="ko">${esc(s.name_ko)}${has(s.since) ? `, since ${esc(s.since)}` : ""}</div>` : ""}
+          <dl>
+            ${has(s.education) ? `<dt>Education</dt><dd>${esc(s.education)}</dd>` : ""}
+            ${has(s.interests) ? `<dt>Research interests</dt><dd>${esc(s.interests)}</dd>` : ""}
+            ${has(s.email) ? `<dt>Email</dt><dd><a href="mailto:${esc(s.email)}">${esc(s.email)}</a></dd>` : ""}
+          </dl>
+        </article>`).join("")}
+      </div></section>`).join("");
+
+    const alumni = list(m.alumni).length ? `<section class="group"><h2>Alumni</h2><ul class="alumni-list">
+      ${list(m.alumni).map((a) => `<li><strong>${esc(a.name)}</strong><span>${esc(a.degree)}</span><span>${esc(a.now)}</span></li>`).join("")}
+    </ul></section>` : "";
+
+    return pageHead("People", "Our team of researchers working on neuromorphic devices and AI semiconductors.") + `
+      <section class="section"><div class="wrap">
+        <div class="pi">
+          ${avatar(p)}
+          <div>
+            <h2 class="pi-name">${esc(p.name)}${has(p.name_ko) ? `<span>${esc(p.name_ko)}</span>` : ""}</h2>
+            <p class="pi-title">${esc(p.title)}, ${esc(p.affiliation)}</p>
+            <ul class="contact-lines">
+              ${has(p.email) ? `<li><span>Email</span> <a href="mailto:${esc(p.email)}">${esc(p.email)}</a></li>` : ""}
+              ${has(p.phone) ? `<li><span>Phone</span> ${esc(p.phone)}</li>` : ""}
+              ${has(p.office) ? `<li><span>Office</span> ${esc(p.office)}</li>` : ""}
+              ${has(site.links?.google_scholar) ? `<li><span>Scholar</span> <a href="${esc(site.links.google_scholar)}" target="_blank" rel="noopener">Google Scholar profile</a></li>` : ""}
+            </ul>
+            <div class="bio"><p>${esc(p.bio)}</p></div>
+          </div>
+        </div>
+        <div class="cv">
+          ${cvBlock("Education", p.education)}
+          ${cvBlock("Career", p.career)}
+          ${cvBlock("Honors and awards", p.honors)}
+        </div>
+
+        ${anyStudents ? groupHtml : `<section class="group"><h2>Students</h2>
+          <div class="empty"><p><strong>We are building our first cohort.</strong></p>
+          <p>Graduate students and undergraduate interns who join now will shape the lab's research direction from the start. See <a href="join.html">Join us</a> for how to apply.</p></div>
+        </section>`}
+        ${alumni}
+      </div></section>`;
+  },
+
+  async research(site) {
+    const [research, pubs] = await Promise.all([loadYaml("research"), loadYaml("publications")]);
+    const byNo = new Map(list(pubs.journal).map((p) => [Number(p.no), p]));
+    return pageHead("Research", "We work across three connected layers: the computing paradigm, the memory devices that enable it, and the processes that make those devices manufacturable.") +
+      list(research).map((r) => {
+        const papers = list(r.papers).map((n) => byNo.get(Number(n))).filter(Boolean);
+        return `<section class="section" id="${esc(r.id)}"><div class="wrap topic">
+          <div>
+            <h2>${esc(r.title)}</h2>
+            ${has(r.title_ko) ? `<p class="ko">${esc(r.title_ko)}</p>` : ""}
+            <div class="topic-desc"><p>${chem(esc(r.description))}</p></div>
+            ${list(r.keywords).length ? `<ul class="chips">${list(r.keywords).map((k) => `<li>${esc(k)}</li>`).join("")}</ul>` : ""}
+          </div>
+          <div class="topic-art">${has(r.image) ? `<img src="images/research/${esc(r.image)}" alt="${esc(r.title)}">` : glyph(r.icon, 140)}</div>
+          ${papers.length ? `<div class="topic-papers"><h3>Representative papers</h3><ul class="pub-list">${papers.map((p) => pubItem(p, site, { compact: true })).join("")}</ul></div>` : ""}
+        </div></section>`;
+      }).join("");
+  },
+
+  async publications(site) {
+    const pubs = await loadYaml("publications");
+    const STATUS_ORDER = ["accepted", "revision", "under review", "submitted", "in preparation"];
+    const rank = (p) => { const i = STATUS_ORDER.indexOf(String(p.status || "").toLowerCase()); return i < 0 ? 99 : i; };
+    const progress = list(pubs.in_progress).slice().sort((a, b) => rank(a) - rank(b));
+    const cats = [["journal", "Journal"], ["conference", "Conference"], ["patents", "Patents"]]
+      .filter(([k]) => list(pubs[k]).length || (k === "journal" && progress.length));
+    const nJ = list(pubs.journal).length;
+    const firstYear = Math.min(...list(pubs.journal).map((p) => Number(p.year) || 9999));
+    const headText = nJ ? `${nJ} journal articles since ${firstYear}` + (progress.length ? `, with ${progress.length} more in progress.` : ".") : "";
+    const html = pageHead("Publications", headText) + `
+      <section class="section"><div class="wrap">
+        <div class="pub-tools">
+          <div class="tabs" role="tablist">
+            ${cats.map(([k, label], i) => `<button class="tab" role="tab" data-cat="${k}" aria-selected="${i === 0}">${label}<span class="count">${list(pubs[k]).length}</span></button>`).join("")}
+          </div>
+          <input class="search" type="search" placeholder="Search title, author, journal" aria-label="Search publications">
+        </div>
+        <p class="legend">† equal contribution, * corresponding author</p>
+        <div id="pub-body"></div>
+      </div></section>`;
+
+    setTimeout(() => {
+      let cat = cats[0]?.[0];
+      const body = $("#pub-body"), input = $(".search");
+      const match = (q) => (p) => !q || [p.title, p.authors, p.venue, p.year, p.status].join(" ").toLowerCase().includes(q);
+      const draw = () => {
+        const q = input.value.trim().toLowerCase();
+        const items = list(pubs[cat]).filter(match(q));
+        const prog = cat === "journal" ? progress.filter(match(q)) : [];
+        if (!items.length && !prog.length) { body.innerHTML = `<p class="empty">No publications match “${esc(input.value)}”. Try a different word or clear the search.</p>`; return; }
+        const years = [...new Set(items.map((p) => p.year))];
+        body.innerHTML =
+          (prog.length ? `<div class="year-group in-progress"><h3>In progress</h3><ul class="pub-list">${prog.map((p) => pubItem(p, site)).join("")}</ul></div>` : "") +
+          years.map((y) => `<div class="year-group"><h3>${esc(y)}</h3><ul class="pub-list">${items.filter((p) => p.year === y).map((p) => pubItem(p, site)).join("")}</ul></div>`).join("");
+      };
+      document.querySelectorAll(".tab").forEach((t) => t.addEventListener("click", () => {
+        document.querySelectorAll(".tab").forEach((x) => x.setAttribute("aria-selected", x === t));
+        cat = t.dataset.cat; draw();
+      }));
+      input.addEventListener("input", draw);
+      if (cat) draw();
+    });
+    return html;
+  },
+
+  async news() {
+    const news = await loadYaml("news");
+    return pageHead("News", "Papers, awards, and events from the lab.") +
+      `<section class="section"><div class="wrap">${newsList(list(news))}</div></section>`;
+  },
+
+  async join(site) {
+    const j = await loadYaml("join");
+    const c = site.contact || {};
+    const subject = encodeURIComponent("[NCDL 지원] 이름_지원과정");
+    return pageHead("Join us", esc(site.recruiting_text)) + `
+      <section class="section" lang="ko"><div class="wrap">
+        <p class="join-lead">${esc(j.lead)}</p>
+        <p class="join-lead-en" lang="en">${esc(j.lead_en)}</p>
+      </div></section>
+      <section class="section" lang="ko"><div class="wrap join-grid">
+        <div><h2>모집 과정</h2><ul class="positions">${list(j.positions).map((p) => `<li><strong>${esc(p.title)}</strong><span>${esc(p.text)}</span></li>`).join("")}</ul></div>
+        <div><h2>이런 분을 찾습니다</h2><ul class="ticks">${list(j.looking_for).map((x) => `<li>${esc(x)}</li>`).join("")}</ul></div>
+        <div><h2>연구실 지원 사항</h2><ul class="ticks">${list(j.we_offer).map((x) => `<li>${esc(x)}</li>`).join("")}</ul></div>
+        <div><h2>지원 방법</h2><ol class="steps">${list(j.how_to_apply).map((x) => `<li>${esc(x)}</li>`).join("")}</ol></div>
+      </div>
+      <div class="wrap"><div class="apply-box">
+        <p>지원 및 문의: <strong>${esc(c.pi)}</strong>, <a href="mailto:${esc(c.email)}">${esc(c.email)}</a></p>
+        <a class="btn btn-primary" href="mailto:${esc(c.email)}?subject=${subject}">지원 메일 보내기</a>
+      </div></div></section>
+      ${list(j.faq).length ? `<section class="section" lang="ko"><div class="wrap faq"><div class="section-head"><h2>자주 묻는 질문</h2></div>
+        ${list(j.faq).map((f) => `<details><summary>${esc(f.q)}</summary><p>${esc(f.a)}</p></details>`).join("")}
+      </div></section>` : ""}`;
+  },
+
+  async contact(site) {
+    const c = site.contact || {};
+    const q = encodeURIComponent(c.map_query || c.address || "");
+    return pageHead("Contact", "Visit us at Chung-Ang University's Seoul campus in Heukseok-dong.") + `<section class="section"><div class="wrap contact-grid">
+      <dl>
+        <dt>Principal investigator</dt><dd>${esc(c.pi)}</dd>
+        <dt>Email</dt><dd><a href="mailto:${esc(c.email)}">${esc(c.email)}</a></dd>
+        <dt>Phone</dt><dd>${esc(c.phone)}</dd>
+        <dt>Office</dt><dd>${esc(c.office)}</dd>
+        ${has(c.lab_room) ? `<dt>Lab</dt><dd>${esc(c.lab_room)}</dd>` : ""}
+        <dt>Address</dt><dd>${esc(site.school)}, ${esc(site.university)}<br>${esc(c.address)}</dd>
+        ${has(c.address_ko) ? `<dt>주소</dt><dd lang="ko">${esc(c.address_ko)}</dd>` : ""}
+      </dl>
+      <iframe class="map" title="Map of ${esc(c.map_query)}" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+        src="https://maps.google.com/maps?q=${q}&z=17&output=embed"></iframe>
+    </div></section>`;
+  },
+};
+
+function newsList(items) {
+  if (!items.length) return `<p class="empty">News will be posted here.</p>`;
+  return `<ul class="news-list">${items.map((n) => `<li>
+    <span class="news-date">${esc(n.date)}</span>
+    <p>${has(n.tag) ? `<span class="news-tag">${esc(n.tag)}</span>` : ""}${chem(n.text ?? "")}</p>
+  </li>`).join("")}</ul>`;
+}
+
+/* ---------- boot ---------- */
+
+(async function boot() {
+  const page = document.body.dataset.page || "home";
+  const main = $("#main");
+  main.innerHTML = `<div class="loading">Loading…</div>`;
+  try {
+    const site = await loadYaml("site");
+    renderChrome(site, page);
+    const render = PAGES[page] || PAGES.home;
+    main.innerHTML = await render(site);
+    if (location.hash) { const t = document.getElementById(location.hash.slice(1)); if (t) t.scrollIntoView(); }
+  } catch (e) {
+    console.error(e);
+    const local = location.protocol === "file:";
+    main.innerHTML = `<div class="wrap"><div class="load-error" role="alert">
+      <p><strong>페이지 내용을 불러오지 못했습니다.</strong></p>
+      <p>${esc(e.message)}</p>
+      ${local ? `<p>파일을 직접 열면(file://) 데이터 파일을 읽을 수 없습니다. GitHub Pages 주소로 접속하거나 README의 "내 컴퓨터에서 미리보기"를 참고하세요.</p>`
+              : e.yaml ? `<p>해당 줄의 들여쓰기(스페이스 2칸), 따옴표, 콜론(:) 뒤 띄어쓰기를 확인해 주세요.</p>` : ""}
+    </div></div>`;
+  }
+})();
