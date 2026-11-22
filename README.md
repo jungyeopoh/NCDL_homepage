@@ -67,7 +67,7 @@ scripts/pubbot.py   논문 자동화 봇 (GitHub Actions가 실행)
 ```
 제목: [DNS 등록 요청] 연구실 홈페이지 서브도메인 ncdl.cau.ac.kr
 
-안녕하세요. ICT공과대학 융합공학부 오정엽 교수입니다.
+안녕하세요. 창의ICT공과대학 융합공학부 오정엽 교수입니다.
 연구실 홈페이지를 GitHub Pages로 운영하고자 아래와 같이 DNS 레코드 등록을 요청드립니다.
 
 1. CNAME 레코드
