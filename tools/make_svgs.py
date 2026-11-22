@@ -477,3 +477,117 @@ def memory_combined():
 files["memory.svg"] = memory_combined()
 (OUT / "memory.svg").write_text(files["memory.svg"], encoding="utf-8")
 print("wrote memory.svg")
+
+
+# ------------------------------------------------------------------ 7. overview B: AI needs -> what we build -> what it enables
+def ai_overview():
+    W, H = 1000, 452
+    b = []
+
+    def head(x, s_):
+        return text(x, 34, s_, "h lg")
+
+    def arrow(x0, x1, y):
+        return f'<path d="M{x0},{y} L{x1},{y}" stroke="{BLUE}" stroke-width="2.4" fill="none" marker-end="url(#arrb)"/>'
+
+    # --- column 1: what AI needs
+    b.append(head(24, "AI is outgrowing its hardware"))
+    cards = [("Large language models", "billions of weights held in memory"),
+             ("Generative AI", "images, text, and scientific data"),
+             ("AI on small devices", "phones, sensors, and robots")]
+    for k, (ttl, sub) in enumerate(cards):
+        y = 58 + k * 76
+        b.append(f'<rect x="24" y="{y}" width="272" height="64" rx="12" fill="#fff" stroke="{RULE}" stroke-width="1.4"/>')
+        cx, cy = 54, y + 32
+        b.append(f'<circle cx="{cx}" cy="{cy}" r="17" fill="{TINT}"/>')
+        if k == 0:
+            for r in range(3):
+                b.append(f'<rect x="{cx - 9}" y="{cy - 9 + r * 7}" width="18" height="4" rx="2" fill="{BLUE}" opacity="{1 - r * .25}"/>')
+        elif k == 1:
+            b.append(f'<path d="M{cx},{cy - 10} L{cx + 3},{cy - 3} L{cx + 10},{cy} L{cx + 3},{cy + 3} L{cx},{cy + 10} L{cx - 3},{cy + 3} L{cx - 10},{cy} L{cx - 3},{cy - 3} Z" fill="{BLUE}"/>')
+        else:
+            b.append(f'<rect x="{cx - 7}" y="{cy - 7}" width="14" height="14" rx="3" fill="{BLUE}"/>')
+            for d in (-4, 4):
+                b.append(f'<path d="M{cx + d},{cy - 11} v4 M{cx + d},{cy + 7} v4 M{cx - 11},{cy + d} h4 M{cx + 7},{cy + d} h4" stroke="{BLUE}" stroke-width="1.6"/>')
+        b.append(text(82, y + 28, ttl, "t md bold"))
+        b.append(text(82, y + 47, sub, "t sm m"))
+    b.append(f'<rect x="24" y="290" width="272" height="52" rx="12" fill="#fbf3d9"/>')
+    b.append(text(40, 312, "The bottleneck is memory:", "t sm bold", extra='style="fill:#6e5300"'))
+    b.append(text(40, 330, "moving data costs more than computing", "t sm", extra='style="fill:#6e5300"'))
+
+    b.append(arrow(308, 348, 180))
+
+    # --- column 2: what we build (stack)
+    b.append(head(366, "What NCDL builds"))
+    cx, w, d, t = 446, 150, 75, 12
+    rows = [(108, "#eaf2fb", NAVY, "#0a4a80", "Neuromorphic hardware", "synapses, neurons, arrays"),
+            (196, "#e9f0f8", "#b9cbe0", "#a5bbd5", "Memory devices", "beyond DRAM and NAND"),
+            (284, "#eef1f4", "#c9d0d8", "#b7c0ca", "Materials and process", "2D, oxide films, M3D")]
+    for n, (y, top_, s1, s2, ttl, sub) in enumerate(reversed(rows)):
+        pass
+    for n in (2, 1, 0):
+        y, top_, s1, s2, ttl, sub = rows[n]
+        b.append(slab(cx, y, w, d, t, top_, s1, s2))
+        inner = []
+        if n == 0:
+            nodes = {0: [40, 100, 160], 1: [30, 75, 125, 170], 2: [60, 140]}
+            xs = {0: 35, 1: 100, 2: 165}
+            for L in (0, 1):
+                for a_ in nodes[L]:
+                    for b_ in nodes[L + 1]:
+                        inner.append(f'<line x1="{xs[L]}" y1="{a_}" x2="{xs[L + 1]}" y2="{b_}" stroke="{BLUE}" stroke-width="1" opacity=".55" vector-effect="non-scaling-stroke"/>')
+            for L, ys_ in nodes.items():
+                for yy in ys_:
+                    inner.append(f'<circle cx="{xs[L]}" cy="{yy}" r="11" fill="{BLUE}"/>')
+        elif n == 1:
+            for k in range(6):
+                q = 30 + k * 28
+                inner.append(f'<line x1="14" y1="{q}" x2="186" y2="{q}" stroke="{BLUE}" stroke-width="1.8" vector-effect="non-scaling-stroke"/>')
+                inner.append(f'<line x1="{q}" y1="14" x2="{q}" y2="186" stroke="{NAVY}" stroke-width="1.8" vector-effect="non-scaling-stroke"/>')
+            for i in range(6):
+                for j in range(6):
+                    inner.append(f'<rect x="{25 + i * 28}" y="{25 + j * 28}" width="10" height="10" fill="{GOLD}"/>')
+        else:
+            for i in range(7):
+                for j in range(7):
+                    px, py = 16 + i * 27 + (j % 2) * 13, 16 + j * 26
+                    if px < 192:
+                        inner.append(f'<circle cx="{px}" cy="{py}" r="5" fill="{TEAL if (i + j) % 3 else VIOLET}"/>')
+        b.append(on_face(cx, y, w, d, "".join(inner)))
+        b.append(text(538, y - 2, ttl, "t md bold"))
+        b.append(text(538, y + 17, sub, "t sm m"))
+
+    b.append(arrow(712, 750, 180))
+
+    # --- column 3: what it enables
+    b.append(head(766, "What it enables"))
+    outs = [("Less energy per", "AI operation", "bolt"), ("Denser, faster memory", "stacked on logic", "layers"), ("AI that runs on", "small devices", "chip")]
+    for k, (l1, l2, icon) in enumerate(outs):
+        y = 58 + k * 76
+        cx_, cy_ = 790, y + 32
+        b.append(f'<circle cx="{cx_}" cy="{cy_}" r="21" fill="{TEAL}"/>')
+        if icon == "bolt":
+            b.append(f'<path d="M{cx_ + 3},{cy_ - 12} L{cx_ - 7},{cy_ + 2} L{cx_ - 1},{cy_ + 2} L{cx_ - 3},{cy_ + 12} L{cx_ + 7},{cy_ - 2} L{cx_ + 1},{cy_ - 2} Z" fill="#fff"/>')
+        elif icon == "layers":
+            for r in range(3):
+                yy = cy_ - 7 + r * 6
+                b.append(f'<path d="M{cx_ - 10},{yy} L{cx_},{yy - 5} L{cx_ + 10},{yy} L{cx_},{yy + 5} Z" fill="#fff" opacity="{1 - r * .28}"/>')
+        else:
+            b.append(f'<rect x="{cx_ - 7}" y="{cy_ - 7}" width="14" height="14" rx="3" fill="#fff"/>')
+            for d_ in (-4, 4):
+                b.append(f'<path d="M{cx_ + d_},{cy_ - 12} v4 M{cx_ + d_},{cy_ + 8} v4 M{cx_ - 12},{cy_ + d_} h4 M{cx_ + 8},{cy_ + d_} h4" stroke="#fff" stroke-width="1.6"/>')
+        b.append(text(822, y + 27, l1, "t md bold"))
+        b.append(text(822, y + 46, l2, "t md bold"))
+
+    # --- feedback band
+    b.append(f'<rect x="24" y="372" width="952" height="56" rx="14" fill="{TINT}"/>')
+    b.append(f'<path d="M446,334 L446,366" stroke="{BLUE}" stroke-width="1.6" fill="none" stroke-dasharray="4 3"/>')
+    b.append(f'<path d="M160,366 L160,348" stroke="{BLUE}" stroke-width="1.6" fill="none" stroke-dasharray="4 3" marker-end="url(#arrb)"/>')
+    b.append(text(500, 396, "Tested on real AI models", "t md bold b", "middle"))
+    b.append(text(500, 416, "We run generative networks and Transformers on data measured from our own devices.", "t sm", "middle"))
+    return svg(W, H, "".join(b), "AI is outgrowing its hardware; NCDL builds materials, memory devices, and neuromorphic hardware that enable more efficient AI")
+
+
+files["ai-overview.svg"] = ai_overview()
+(OUT / "ai-overview.svg").write_text(files["ai-overview.svg"], encoding="utf-8")
+print("wrote ai-overview.svg")

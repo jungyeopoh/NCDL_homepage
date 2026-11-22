@@ -22,6 +22,22 @@ overview:
     image: "diagrams/research-stack.svg"
     caption: "Three connected layers of research, tied together by modeling and simulation."
 
+# 디자인 b 버전(site.yml design.version: "b" 또는 주소 뒤 ?design=b)에서 쓰는 소개. AI와 파급 효과를 강조.
+overview_b:
+  title: "Semiconductor technology for AI"
+  description: >-
+    AI models keep growing, and the hardware that runs them is struggling to
+    keep up. The limit is no longer arithmetic but memory: storing billions of
+    weights and moving them between memory and processor now dominates the
+    time and energy of AI. NCDL works on this problem across the full stack,
+    from new materials and processes to next-generation memory devices and
+    neuromorphic hardware, and tests what it builds on real AI models. The
+    goal is AI that needs far less energy and can run anywhere, from data
+    centers to small devices.
+  diagram:
+    image: "diagrams/ai-overview.svg"
+    caption: "What AI needs, what we build for it, and what that makes possible."
+
 topics:
   - id: neuromorphic
     icon: spikes

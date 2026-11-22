@@ -147,8 +147,9 @@ function loopPoints(amp, cx, cy, rx, ry, iMax) {
 
 // 홈 첫 화면 그림: 멤리스터 크로스바 어레이 (등각 투영).
 // 교차점마다 메모리 셀이 있고, 셀 색은 박막 간섭색처럼 저장된 가중치에 따라 달라진다.
-function heroArray() {
-  const W = 1000, H = 640, ox = 1010, oy = 36, ax = 26, ay = 13, h = 15, N = 26, M = 37;
+function heroArray(variant = "a") {
+  const B = variant === "b";
+  const W = 1000, H = 640, ox = B ? 1300 : 1010, oy = B ? 130 : 36, ax = 26, ay = 13, h = 15, N = 26, M = B ? 30 : 37;
   const P = (i, j, z = 0) => [ox + (i - j) * ax, oy + (i + j) * ay - z];
   const f = (n) => n.toFixed(1);
   const stops = [[224, 167, 101], [169, 123, 224], [91, 141, 255], [63, 208, 201], [240, 205, 74]];
@@ -175,6 +176,7 @@ function heroArray() {
     const a = P(-1, j, 0), b = P(N, j, 0);
     pulses += `<path class="pulse" pathLength="1" d="M${f(a[0])},${f(a[1])}L${f(b[0])},${f(b[1])}" style="animation-delay:${n * 1.7 + 2}s"/>`;
   });
+  if (B) return heroNetwork({ W, H, P, f, h, N, M, color, bottom, top, cells, pulses });
   const tip = P(0, 14, h + 2.5);
   return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMinYMin slice" role="img" aria-labelledby="arrayTitle">
     <title id="arrayTitle">A memristor crossbar array: every crossing of two electrodes is a memory cell that stores one synaptic weight</title>
@@ -191,6 +193,82 @@ function heroArray() {
       <text x="${f(tip[0] - 52)}" y="${f(tip[1] - 30)}" text-anchor="end">that stores one synaptic weight</text>
     </g>
   </svg>`;
+}
+
+// B안: 3D로 적층된 칩 위의 메모리 어레이에서 신경망이 자라나는 그림 (AI ← 뉴로모픽 어레이 ← 차세대 반도체)
+function heroNetwork({ W, H, P, f, h, N, M, color, bottom, top, cells, pulses }) {
+  // 신경망: [i, j, 높이]. 맨 아래 층은 어레이의 셀, 위로 갈수록 층이 좁아져 출력 노드 하나로 모인다.
+  const layers = [
+    [[1, 24], [2, 22], [4, 21], [3, 25], [5, 24], [6, 22]].map(([i, j]) => [i, j, h + 4]),
+    [[0.8, 24.6, 125], [2.2, 23, 137], [3.8, 21.6, 124], [3.2, 25.4, 120], [5, 23.6, 130]],
+    [[1.6, 23.8, 240], [3.2, 22.4, 252], [4, 24.6, 236], [5, 22.5, 244]],
+    [[2.4, 23.4, 338], [4.2, 23, 348]],
+    [[3.3, 23.3, 420]],
+  ].map((L) => L.map(([i, j, z]) => P(i, j, z)));
+  const nodeColor = [0.62, 0.5, 0.36, 0.2, 0.9];
+  let edges = "", nodes = "", glow = "", signals = "";
+  for (let k = 0; k < layers.length - 1; k++) for (const a of layers[k]) for (const b of layers[k + 1])
+    edges += `<line x1="${f(a[0])}" y1="${f(a[1])}" x2="${f(b[0])}" y2="${f(b[1])}" opacity="${(0.26 + 0.08 * k).toFixed(2)}"/>`;
+  layers.forEach((L, k) => L.forEach(([x, y], n) => {
+    if (k === 0) { nodes += `<circle class="net-root" cx="${f(x)}" cy="${f(y)}" r="4.5"/>`; return; }
+    const out = k === layers.length - 1, r = out ? 12 : 5.5 + k * 1.2;
+    const c = out ? "#fff" : color(nodeColor[k] + n * 0.06);
+    glow += `<circle cx="${f(x)}" cy="${f(y)}" r="${r + (out ? 14 : 5)}" fill="${c}"/>`;
+    nodes += `<circle class="${out ? "net-out" : "net-node"}" cx="${f(x)}" cy="${f(y)}" r="${r}" fill="${c}"/>`;
+  }));
+  // 셀에서 출력까지 올라가는 신호 경로
+  [[0, 0, 0, 0], [3, 3, 2, 1], [2, 2, 1, 0], [5, 4, 3, 1], [1, 1, 1, 0], [4, 4, 2, 1]].forEach((r, n) => {
+    const pts = [layers[0][r[0]], layers[1][r[1]], layers[2][r[2]], layers[3][r[3]], layers[4][0]];
+    signals += `<path class="signal" pathLength="1" d="M${pts.map((q) => `${f(q[0])},${f(q[1])}`).join("L")}" style="animation-delay:${(n * 1.15 + 1.8).toFixed(2)}s"/>`;
+  });
+
+  // 칩 옆면: 어레이 아래에 쌓인 층 (메모리 층, 배선, 실리콘 CMOS, 기판)
+  const A = P(-1.7, M + 0.7), Bp = P(N, M + 0.7);
+  const band = (y0, y1, fill, op) => `<polygon points="${f(A[0])},${f(A[1] + y0)} ${f(Bp[0])},${f(Bp[1] + y0)} ${f(Bp[0])},${f(Bp[1] + y1)} ${f(A[0])},${f(A[1] + y1)}" fill="${fill}" opacity="${op}"/>`;
+  const side = band(2, 12, "#3fd0c9", 0.8) + band(12, 16, "#021e36", 1) + band(16, 22, "#e0a765", 0.85) + band(22, 26, "#021e36", 1) +
+    band(26, 32, "#e0a765", 0.65) + band(32, 36, "#021e36", 1) + band(36, 46, "#9db6d3", 0.6) + band(46, 66, "#2b4a6b", 1);
+  const surf = [P(-1.7, -1), P(N, -1), P(N, M + 0.7), P(-1.7, M + 0.7)].map((q) => `${f(q[0])},${f(q[1])}`).join(" ");
+
+  const out = layers[4][0], cell = P(0, 26, h + 2.5), slab = [A[0] + 96, A[1] + 48 + 30];
+  const svgOpen = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMaxYMax meet"`;
+  return `${svgOpen} role="img" aria-labelledby="arrayTitle">
+    <title id="arrayTitle">A neural network rising from a memory array on a 3D-stacked chip: each memory cell stores one synaptic weight of the network</title>
+    <defs>
+      <filter id="cellGlow" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="5"/></filter>
+      <filter id="nodeGlow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="9"/></filter>
+      <radialGradient id="netHalo"><stop offset="0" stop-color="#7fb6ff" stop-opacity=".26"/><stop offset="1" stop-color="#7fb6ff" stop-opacity="0"/></radialGradient>
+      <linearGradient id="subFade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5f7d9c" stop-opacity=".5"/><stop offset="1" stop-color="#5f7d9c" stop-opacity="0"/></linearGradient>
+    </defs>
+    <g class="chip-side">${side}</g>
+    <polygon class="chip-top" points="${surf}"/>
+    <g class="arr-bottom">${bottom}</g>
+    <g class="arr-pulses">${pulses}</g>
+    <g class="arr-cells arr-glow" filter="url(#cellGlow)">${cells}</g>
+    <g class="arr-cells">${cells}</g>
+    <g class="arr-top">${top}</g>
+    <g class="net">
+      <ellipse cx="${f(layers[2][1][0])}" cy="${f(layers[2][1][1] + 30)}" rx="230" ry="270" fill="url(#netHalo)"/>
+      <g class="net-edges">${edges}</g>
+      <g class="net-signals">${signals}</g>
+      <g class="net-glow" filter="url(#nodeGlow)">${glow}</g>
+      ${nodes}
+    </g>
+  </svg>
+  <div class="hero-notes" aria-hidden="true">${svgOpen}>
+    <g class="arr-note">
+      <path d="M${f(out[0] - 22)},${f(out[1])} L${f(out[0] - 66)},${f(out[1])}"/>
+      <text class="note-title" x="${f(out[0] - 76)}" y="${f(out[1] - 3)}" text-anchor="end">AI model</text>
+      <text x="${f(out[0] - 76)}" y="${f(out[1] + 18)}" text-anchor="end">a neural network</text>
+      <path d="M${f(cell[0] - 8)},${f(cell[1])} L${f(cell[0] - 40)},${f(cell[1])}"/>
+      <circle cx="${f(cell[0])}" cy="${f(cell[1])}" r="5"/>
+      <text class="note-title" x="${f(cell[0] - 50)}" y="${f(cell[1] - 3)}" text-anchor="end">Memory array</text>
+      <text x="${f(cell[0] - 50)}" y="${f(cell[1] + 18)}" text-anchor="end">stores its weights</text>
+      <path d="M${f(slab[0] - 6)},${f(slab[1])} L${f(slab[0] - 40)},${f(slab[1])}"/>
+      <circle cx="${f(slab[0])}" cy="${f(slab[1])}" r="5"/>
+      <text class="note-title" x="${f(slab[0] - 50)}" y="${f(slab[1] - 3)}" text-anchor="end">Next-generation chip</text>
+      <text x="${f(slab[0] - 50)}" y="${f(slab[1] + 18)}" text-anchor="end">new materials, stacked in 3D</text>
+    </g>
+  </svg></div>`;
 }
 
 function brandMark(size = 34) {
@@ -215,9 +293,33 @@ function glyph(kind, size = 56) {
 
 /* ---------- layout ---------- */
 
+// 디자인 버전: site.yml 의 design.version (a / b). 주소 뒤에 ?design=b 를 붙이면 그 브라우저에서만 미리보기.
+let DESIGN = "a", DESIGN_PREVIEW = false;
+function designVersion(site) {
+  let v = null;
+  try {
+    const q = new URLSearchParams(location.search).get("design");
+    if (q) sessionStorage.setItem("ncdl-design", q.toLowerCase());
+    v = sessionStorage.getItem("ncdl-design");
+  } catch { /* 저장소를 못 쓰는 환경이면 기본값 사용 */ }
+  const base = String(site.design?.version || "a").toLowerCase();
+  DESIGN_PREVIEW = !!v && v !== base;
+  return v || base;
+}
+
 function applyDesign(site) {
   const d = site.design || {};
   document.documentElement.dataset.theme = d.theme || "paper";
+  DESIGN = designVersion(site);
+  document.documentElement.dataset.design = DESIGN;
+  if (DESIGN_PREVIEW) {
+    const other = String(d.version || "a").toLowerCase();
+    const bar = document.createElement("a");
+    bar.className = "design-preview";
+    bar.href = `${location.pathname}?design=${other}`;
+    bar.textContent = `Previewing design ${DESIGN.toUpperCase()}. Back to ${other.toUpperCase()}`;
+    document.body.appendChild(bar);
+  }
 }
 
 // navy 테마처럼 헤더가 어두우면 흰색 로고를 사용
@@ -288,14 +390,14 @@ const PAGES = {
         <div class="wrap"><div class="hero-text">
           <p class="affil">${esc(site.school)}, ${esc(site.university)}</p>
           <h1>${esc(site.lab_name)}</h1>
-          <p class="lede">${esc(site.tagline)}</p>
-          <p class="sub">${esc(site.intro)}</p>
+          <p class="lede">${esc((DESIGN === "b" && site.tagline_b) || site.tagline)}</p>
+          <p class="sub">${esc((DESIGN === "b" && site.intro_b) || site.intro)}</p>
           <div class="actions">
             <a class="btn btn-primary" href="research.html">Explore our research</a>
             <a class="btn btn-ghost" href="join.html">Join the lab</a>
           </div>
         </div></div>
-        ${has(site.design?.hero_image) ? "" : `<div class="hero-art">${heroArray()}</div>`}
+        ${has(site.design?.hero_image) ? "" : `<div class="hero-art hero-art-${DESIGN === "b" ? "b" : "a"}">${heroArray(DESIGN)}</div>`}
       </section>
 
       ${site.recruiting ? `<section class="recruit" aria-label="Recruitment"><div class="wrap">
@@ -392,7 +494,7 @@ const PAGES = {
   async research(site) {
     const [research, pubs] = await Promise.all([loadYaml("research"), loadYaml("publications")]);
     const topics = list(research.topics || research);
-    const ov = research.overview || {};
+    const ov = (DESIGN === "b" && research.overview_b) || research.overview || {};
     const byNo = new Map(list(pubs.journal).map((p) => [Number(p.no), p]));
     const ABBR = {
       "Advanced Materials": "Adv. Mater.", "Advanced Functional Materials": "Adv. Funct. Mater.",
