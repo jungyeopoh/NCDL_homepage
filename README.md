@@ -176,14 +176,14 @@ ms:
 `data/site.yml` 의 `design:` 에서:
 ```yaml
 design:
-  version: "a"         # a: 크로스바 어레이 / b: 칩 + 어레이 + 신경망 (AI 강조, Research 소개도 바뀜)
+  version: "b"         # b (현재): 칩 + 어레이 + 신경망, AI 강조 / a: 크로스바 어레이만
   theme: "paper"       # 본문 바탕: paper (밝은 회녹색) / white (흰 바탕) / navy (메뉴까지 남색)
   logo: "brand/ncdl-logo.png"   # images/ 폴더 기준 로고 파일
   hero_image: ""       # images/ 폴더에 올린 사진 → 홈 첫 화면 배경 (크로스바 어레이 그림 대신)
 ```
-- **버전 미리보기**: 주소 뒤에 `?design=b` 를 붙이면 그 브라우저에서만 b 버전이 보입니다 (`?design=a` 로 복귀).
-  마음에 들면 `version: "b"` 로 바꾸면 모든 방문자에게 적용됩니다. b 버전 문구는 `site.yml` 의 `tagline_b`, `intro_b` 와 `research.yml` 의 `overview_b`.
-- 홈 첫 화면은 남색 바탕에 멤리스터 크로스바 어레이 그림입니다 (`assets/js/site.js` 의 `heroArray`).
+- **다른 버전 미리보기**: 주소 뒤에 `?design=a` 를 붙이면 그 브라우저에서만 a 버전이 보입니다 (`?design=b` 로 복귀).
+  b 버전 문구는 `site.yml` 의 `tagline_b`, `intro_b` 와 `research.yml` 의 `overview_b` 에서 고칩니다.
+- 홈 첫 화면 그림은 `assets/js/site.js` 의 `heroNetwork`(b), `heroArray`(a) 가 그립니다. 신경망 층 구성은 `heroNetwork` 맨 위 `spec` 에서 바꿉니다.
   실험실·웨이퍼 사진을 쓰고 싶으면 `hero_image` 에 파일명을 넣으면 사진으로 바뀝니다.
 - 세부 색상은 `assets/css/style.css` 맨 위 `:root` 값으로 바꿀 수 있습니다.
 

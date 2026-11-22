@@ -172,7 +172,7 @@ function heroArray(variant = "a") {
     const v = weight(i, j), depth = Math.min(1, Math.max(0, (a[1] - 60) / 420));
     cells += `<line x1="${f(a[0])}" y1="${f(a[1])}" x2="${f(b[0])}" y2="${f(b[1])}" stroke="${color(v)}" opacity="${(0.35 + 0.65 * depth * (0.55 + 0.45 * v)).toFixed(2)}" style="--d:${Math.round(Math.max(0, a[0]) * 1.3)}ms"/>`;
   }
-  [9, 16, 22, 29].forEach((j, n) => {
+  (B ? [15, 20, 25, 27] : [9, 16, 22, 29]).forEach((j, n) => {
     const a = P(-1, j, 0), b = P(N, j, 0);
     pulses += `<path class="pulse" pathLength="1" d="M${f(a[0])},${f(a[1])}L${f(b[0])},${f(b[1])}" style="animation-delay:${n * 1.7 + 2}s"/>`;
   });
@@ -195,30 +195,40 @@ function heroArray(variant = "a") {
   </svg>`;
 }
 
-// B안: 3D로 적층된 칩 위의 메모리 어레이에서 신경망이 자라나는 그림 (AI ← 뉴로모픽 어레이 ← 차세대 반도체)
+// B안: 3D로 적층된 칩 위의 메모리 어레이와, 그 가장자리에 세워진 신경망.
+// 색 = 가중치. 신경망에서는 선(시냅스)이, 어레이에서는 셀이 같은 색 체계를 쓴다.
+// 인접한 두 층 사이의 가중치 행렬(W1, W2, W3)이 바로 뒤 어레이 구역 하나에 대응한다.
 function heroNetwork({ W, H, P, f, h, N, M, color, bottom, top, cells, pulses }) {
-  // 신경망: [i, j, 높이]. 맨 아래 층은 어레이의 셀, 위로 갈수록 층이 좁아져 출력 노드 하나로 모인다.
-  const layers = [
-    [[1, 24], [2, 22], [4, 21], [3, 25], [5, 24], [6, 22]].map(([i, j]) => [i, j, h + 4]),
-    [[0.8, 24.6, 125], [2.2, 23, 137], [3.8, 21.6, 124], [3.2, 25.4, 120], [5, 23.6, 130]],
-    [[1.6, 23.8, 240], [3.2, 22.4, 252], [4, 24.6, 236], [5, 22.5, 244]],
-    [[2.4, 23.4, 338], [4.2, 23, 348]],
-    [[3.3, 23.3, 420]],
-  ].map((L) => L.map(([i, j, z]) => P(i, j, z)));
-  const nodeColor = [0.62, 0.5, 0.36, 0.2, 0.9];
-  let edges = "", nodes = "", glow = "", signals = "";
-  for (let k = 0; k < layers.length - 1; k++) for (const a of layers[k]) for (const b of layers[k + 1])
-    edges += `<line x1="${f(a[0])}" y1="${f(a[1])}" x2="${f(b[0])}" y2="${f(b[1])}" opacity="${(0.26 + 0.08 * k).toFixed(2)}"/>`;
-  layers.forEach((L, k) => L.forEach(([x, y], n) => {
-    if (k === 0) { nodes += `<circle class="net-root" cx="${f(x)}" cy="${f(y)}" r="4.5"/>`; return; }
-    const out = k === layers.length - 1, r = out ? 12 : 5.5 + k * 1.2;
-    const c = out ? "#fff" : color(nodeColor[k] + n * 0.06);
-    glow += `<circle cx="${f(x)}" cy="${f(y)}" r="${r + (out ? 14 : 5)}" fill="${c}"/>`;
-    nodes += `<circle class="${out ? "net-out" : "net-node"}" cx="${f(x)}" cy="${f(y)}" r="${r}" fill="${c}"/>`;
+  const spec = [[28, 4], [23, 6], [18, 6], [13, 3]];           // [어레이 가장자리 위치 j, 뉴런 수]
+  const zc = 172, dz = 38;
+  const base = spec.map(([j]) => P(-1, j, 0));
+  const layers = spec.map(([, n], L) => Array.from({ length: n }, (_, k) => [base[L][0], base[L][1] - (zc + (k - (n - 1) / 2) * dz)]));
+  const last = layers.length - 1;
+
+  let edges = "", nodes = "", glow = "", signals = "", drops = "", strips = "", wlabels = "";
+  for (let L = 0; L < last; L++) layers[L].forEach((a, ai) => layers[L + 1].forEach((b, bi) => {
+    const w = 0.5 + 0.5 * Math.sin(ai * 2.3 + bi * 1.7 + L * 4.1);
+    edges += `<line x1="${f(a[0])}" y1="${f(a[1])}" x2="${f(b[0])}" y2="${f(b[1])}" stroke="${color(w)}" stroke-width="${(1 + 1.3 * w).toFixed(1)}" opacity="${(0.34 + 0.4 * w).toFixed(2)}"/>`;
   }));
-  // 셀에서 출력까지 올라가는 신호 경로
-  [[0, 0, 0, 0], [3, 3, 2, 1], [2, 2, 1, 0], [5, 4, 3, 1], [1, 1, 1, 0], [4, 4, 2, 1]].forEach((r, n) => {
-    const pts = [layers[0][r[0]], layers[1][r[1]], layers[2][r[2]], layers[3][r[3]], layers[4][0]];
+  layers.forEach((Lr, L) => Lr.forEach(([x, y], k) => {
+    const r = L === last ? 9 : 7.5;
+    glow += `<circle cx="${f(x)}" cy="${f(y)}" r="${r + 7}"/>`;
+    nodes += `<circle class="${L === last ? "net-out" : "net-node"}" cx="${f(x)}" cy="${f(y)}" r="${r}"${L === last ? ` style="animation-delay:${k * 0.9}s"` : ""}/>`;
+  }));
+  // 뉴런 열에서 어레이 가장자리(전극 끝)로 내려오는 선, 가중치 행렬 구역
+  layers.forEach((Lr, L) => {
+    drops += `<line x1="${f(base[L][0])}" y1="${f(Lr[0][1] + 12)}" x2="${f(base[L][0])}" y2="${f(base[L][1] - 4)}"/>`;
+  });
+  for (let L = 0; L < last; L++) {
+    const j1 = spec[L][0], j2 = spec[L + 1][0];
+    const quad = [P(-1, j1), P(N, j1), P(N, j2), P(-1, j2)].map((q) => `${f(q[0])},${f(q[1])}`).join(" ");
+    strips += `<polygon points="${quad}" class="${L % 2 ? "strip-b" : "strip-a"}"/>`;
+    const m = P(-1.9, (j1 + j2) / 2, 30);
+    wlabels += `<text x="${f(m[0])}" y="${f(m[1])}" text-anchor="middle">W<tspan dy="4" font-size="70%">${L + 1}</tspan></text>`;
+  }
+  // 입력층에서 출력층으로 지나가는 신호
+  [[0, 2, 3, 1], [2, 4, 1, 0], [1, 0, 5, 2], [3, 5, 2, 1], [0, 1, 0, 0], [2, 3, 4, 2]].forEach((r, n) => {
+    const pts = r.map((k, L) => layers[L][k]);
     signals += `<path class="signal" pathLength="1" d="M${pts.map((q) => `${f(q[0])},${f(q[1])}`).join("L")}" style="animation-delay:${(n * 1.15 + 1.8).toFixed(2)}s"/>`;
   });
 
@@ -229,25 +239,27 @@ function heroNetwork({ W, H, P, f, h, N, M, color, bottom, top, cells, pulses })
     band(26, 32, "#e0a765", 0.65) + band(32, 36, "#021e36", 1) + band(36, 46, "#9db6d3", 0.6) + band(46, 66, "#2b4a6b", 1);
   const surf = [P(-1.7, -1), P(N, -1), P(N, M + 0.7), P(-1.7, M + 0.7)].map((q) => `${f(q[0])},${f(q[1])}`).join(" ");
 
-  const out = layers[4][0], cell = P(0, 26, h + 2.5), slab = [A[0] + 96, A[1] + 48 + 30];
+  const topNode = layers[1][layers[1].length - 1], cell = P(0, 30, h + 2.5), slab = [A[0] + 96, A[1] + 48 + 30];
   const svgOpen = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMaxYMax meet"`;
   return `${svgOpen} role="img" aria-labelledby="arrayTitle">
-    <title id="arrayTitle">A neural network rising from a memory array on a 3D-stacked chip: each memory cell stores one synaptic weight of the network</title>
+    <title id="arrayTitle">A neural network standing on the edge of a memory array on a 3D-stacked chip. The weights of the connections between each pair of layers are stored in one block of the array, one memory cell per synapse.</title>
     <defs>
       <filter id="cellGlow" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="5"/></filter>
-      <filter id="nodeGlow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="9"/></filter>
-      <radialGradient id="netHalo"><stop offset="0" stop-color="#7fb6ff" stop-opacity=".26"/><stop offset="1" stop-color="#7fb6ff" stop-opacity="0"/></radialGradient>
-      <linearGradient id="subFade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5f7d9c" stop-opacity=".5"/><stop offset="1" stop-color="#5f7d9c" stop-opacity="0"/></linearGradient>
+      <filter id="nodeGlow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="7"/></filter>
+      <radialGradient id="netHalo"><stop offset="0" stop-color="#7fb6ff" stop-opacity=".22"/><stop offset="1" stop-color="#7fb6ff" stop-opacity="0"/></radialGradient>
     </defs>
     <g class="chip-side">${side}</g>
     <polygon class="chip-top" points="${surf}"/>
+    <g class="arr-strips">${strips}</g>
     <g class="arr-bottom">${bottom}</g>
     <g class="arr-pulses">${pulses}</g>
     <g class="arr-cells arr-glow" filter="url(#cellGlow)">${cells}</g>
     <g class="arr-cells">${cells}</g>
     <g class="arr-top">${top}</g>
     <g class="net">
-      <ellipse cx="${f(layers[2][1][0])}" cy="${f(layers[2][1][1] + 30)}" rx="230" ry="270" fill="url(#netHalo)"/>
+      <ellipse cx="${f((base[1][0] + base[2][0]) / 2)}" cy="${f((base[1][1] + base[2][1]) / 2 - zc)}" rx="330" ry="230" fill="url(#netHalo)"/>
+      <g class="net-drops">${drops}</g>
+      <g class="net-w">${wlabels}</g>
       <g class="net-edges">${edges}</g>
       <g class="net-signals">${signals}</g>
       <g class="net-glow" filter="url(#nodeGlow)">${glow}</g>
@@ -256,13 +268,13 @@ function heroNetwork({ W, H, P, f, h, N, M, color, bottom, top, cells, pulses })
   </svg>
   <div class="hero-notes" aria-hidden="true">${svgOpen}>
     <g class="arr-note">
-      <path d="M${f(out[0] - 22)},${f(out[1])} L${f(out[0] - 66)},${f(out[1])}"/>
-      <text class="note-title" x="${f(out[0] - 76)}" y="${f(out[1] - 3)}" text-anchor="end">AI model</text>
-      <text x="${f(out[0] - 76)}" y="${f(out[1] + 18)}" text-anchor="end">a neural network</text>
-      <path d="M${f(cell[0] - 8)},${f(cell[1])} L${f(cell[0] - 40)},${f(cell[1])}"/>
+      <path d="M${f(topNode[0] - 44)},${f(topNode[1] - 58)} L${f(topNode[0])},${f(topNode[1] - 58)} L${f(topNode[0])},${f(topNode[1] - 14)}"/>
+      <text class="note-title" x="${f(topNode[0] - 54)}" y="${f(topNode[1] - 62)}" text-anchor="end">Neural network</text>
+      <text x="${f(topNode[0] - 54)}" y="${f(topNode[1] - 41)}" text-anchor="end">neurons linked by weighted synapses</text>
+      <path d="M${f(cell[0] - 4)},${f(cell[1] - 5)} L${f(cell[0] - 22)},${f(cell[1] - 27)} L${f(cell[0] - 56)},${f(cell[1] - 27)}"/>
       <circle cx="${f(cell[0])}" cy="${f(cell[1])}" r="5"/>
-      <text class="note-title" x="${f(cell[0] - 50)}" y="${f(cell[1] - 3)}" text-anchor="end">Memory array</text>
-      <text x="${f(cell[0] - 50)}" y="${f(cell[1] + 18)}" text-anchor="end">stores its weights</text>
+      <text class="note-title" x="${f(cell[0] - 64)}" y="${f(cell[1] - 31)}" text-anchor="end">Memory array</text>
+      <text x="${f(cell[0] - 64)}" y="${f(cell[1] - 10)}" text-anchor="end">one cell per synapse</text>
       <path d="M${f(slab[0] - 6)},${f(slab[1])} L${f(slab[0] - 40)},${f(slab[1])}"/>
       <circle cx="${f(slab[0])}" cy="${f(slab[1])}" r="5"/>
       <text class="note-title" x="${f(slab[0] - 50)}" y="${f(slab[1] - 3)}" text-anchor="end">Next-generation chip</text>
