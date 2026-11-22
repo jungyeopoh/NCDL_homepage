@@ -247,6 +247,8 @@ def journal_entry(info: dict, extra: dict, pubs) -> CommentedMap:
         e[k] = extra.get(k) or info.get(k) or ""
     e["note"] = extra.get("note", "")
     e["link"] = info.get("link", "") or extra.get("link", "")
+    if extra.get("role"):
+        e["role"] = extra["role"]
     if extra.get("selected"):
         e["selected"] = True
     if not e["title"]:
@@ -351,6 +353,7 @@ def op_update(fields: dict, cfg: dict) -> tuple[str, str]:
     extra = {
         # 진행 중 목록의 저자 표기(†, *)를 우선 유지
         "authors": item.get("authors") or "",
+        "role": item.get("role") or "",
         "note": field(fields, "IF", "메모"),
         "selected": checked(fields, "대표"),
     }

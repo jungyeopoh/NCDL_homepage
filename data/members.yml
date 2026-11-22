@@ -47,6 +47,7 @@ professor:
 #    since: "2026"
 #    education: "B.S. Electrical Engineering, Chung-Ang University"
 #    interests: "Memristor, Reservoir computing"
+#    aliases: ["Gil-Dong Hong"]   # 논문에 다른 영문 표기로 실린 경우 (논문 목록에서 밑줄 표시용)
 
 postdocs: []
 
@@ -70,6 +71,7 @@ interns:
     name_ko: ""
   - name: "Kyoungmin Kim"
     name_ko: ""
+    aliases: ["Kyung-Min Kim"]   # 논문에 다른 영문 표기로 실린 경우
 
 # 졸업생 예시:
 #  - name: "Gildong Hong"

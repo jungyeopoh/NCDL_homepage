@@ -24,7 +24,57 @@
 #    authors: "Gildong Hong†, Jungyeop Oh*"
 #    venue: "Nature Communications"     # 투고 저널 (비워두면 표시 안 됨)
 
-in_progress: []
+in_progress:
+  # role: 저자 목록을 다 적지 않을 때 교수 역할 표시용 (first / corresponding / first, corresponding)
+  # 연구실 학생 이름은 members.yml 과 같으면 자동으로 밑줄 표시됩니다.
+  - status: "Accepted"
+    title: "Controlling Memristor Stochasticity for Synaptic Computing and Hardware Security"
+    authors: "Kyung-Min Kim, Ul Do Ji, Jungyeop Oh*, Byung Chul Jang*"
+    venue: "Materials Horizons"
+
+  - status: "Revision"
+    title: "Transistor-based soma and dendrite devices for dendritic neural networks"
+    authors: ""
+    role: "first, corresponding"
+    venue: "Materials Horizons"
+
+  - status: "Revision"
+    title: "Copolymer memristor-based Bayesian neural networks"
+    authors: ""
+    role: "corresponding"
+    venue: "Small"
+
+  - status: "Revision"
+    title: "Charge-trap memory for Transformer neural networks"
+    authors: ""
+    role: "corresponding"
+    venue: "ACS Nano"
+
+  - status: "Under review"
+    title: "Adaptive leaky integrate-and-fire neurons for neuromorphic computing"
+    authors: ""
+    role: "corresponding"
+    venue: "Advanced Functional Materials"
+
+  - status: "In preparation"
+    title: "Boron nitride memristor-based physical unclonable functions"
+    authors: "Seokmin Youn†, Sungchan Nam†, Jungyeop Oh*"
+    venue: ""
+
+  - status: "In preparation"
+    title: "Dual-mode boron nitride memristors"
+    authors: "Jaehyung Kim†, Minwoo Kang†, Jungyeop Oh*"
+    venue: ""
+
+  - status: "In preparation"
+    title: "Tonic and phasic spiking neurons for spiking neural networks"
+    authors: "Geonyul Park, Jungyeop Oh*"
+    venue: ""
+
+  - status: "In preparation"
+    title: "MoS2 memristor synapses"
+    authors: "Jaehyung Kim, Jungyeop Oh*"
+    venue: ""
 
 journal:
   - no: 25

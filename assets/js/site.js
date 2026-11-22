@@ -49,17 +49,33 @@ function avatar(p, folder = "images/people/") {
   return `<div class="avatar" aria-hidden="true">${esc(initials(p.name))}</div>`;
 }
 
+// 연구실 학생 이름 (publications 페이지에서 members.yml 로 채움) → 밑줄 표시
+let LAB_AUTHORS = [];
+
 function boldAuthors(authors, names) {
   let out = esc(authors);
+  const rx = (n) => esc(n).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   list(names).forEach((n) => {
-    const safe = esc(n).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    out = out.replace(new RegExp(`(${safe}[†*]*)`, "g"), "<strong>$1</strong>");
+    out = out.replace(new RegExp(`(${rx(n)}[†*]*)`, "g"), "<strong>$1</strong>");
+  });
+  LAB_AUTHORS.forEach((n) => {
+    out = out.replace(new RegExp(`(^|, )(${rx(n)}[†*]*)`, "g"), '$1<span class="lab-author">$2</span>');
   });
   return out;
 }
 
+function labAuthorsFrom(m) {
+  const groups = ["postdocs", "phd", "integrated", "ms", "interns", "alumni"];
+  return groups.flatMap((g) => list(m && m[g])).flatMap((p) => [p.name, ...list(p.aliases)]).filter(has);
+}
+
 // 교수(highlight_authors)가 1저자(맨 앞 또는 †)·교신(*)인지
 function authorRole(p, site) {
+  if (has(p.role)) {
+    const r = String(p.role).toLowerCase();
+    const first = r.includes("first"), corr = r.includes("corr");
+    return { first, corr, lead: first || corr };
+  }
   const names = list(site.highlight_authors).map((n) => String(n).toLowerCase());
   const parts = String(p.authors || "").split(/\s*,\s*/);
   let first = false, corr = false;
@@ -421,7 +437,8 @@ const PAGES = {
   },
 
   async publications(site) {
-    const pubs = await loadYaml("publications");
+    const [pubs, members] = await Promise.all([loadYaml("publications"), loadYaml("members").catch(() => ({}))]);
+    LAB_AUTHORS = labAuthorsFrom(members);
     const STATUS_ORDER = ["accepted", "revision", "under review", "submitted", "in preparation"];
     const rank = (p) => { const i = STATUS_ORDER.indexOf(String(p.status || "").toLowerCase()); return i < 0 ? 99 : i; };
     const progress = list(pubs.in_progress).slice().sort((a, b) => rank(a) - rank(b));
@@ -442,7 +459,7 @@ const PAGES = {
             <input class="search" type="search" placeholder="Search title, author, journal" aria-label="Search publications">
           </div>
         </div>
-        <p class="legend">† equal contribution, * corresponding author. Papers led by our lab are marked.</p>
+        <p class="legend">† equal contribution, * corresponding author, <span class="lab-author">underlined</span>: NCDL students. Papers led by our lab are marked.</p>
         <div id="pub-body"></div>
       </div></section>`;
 
