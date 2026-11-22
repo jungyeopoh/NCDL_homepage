@@ -1,0 +1,24 @@
+# ─────────────────────────────────────────────
+#  저널별 Impact Factor · JCR 순위
+#  - 논문에 note(IF 메모)를 따로 적지 않으면 여기 값이 자동으로 표시됩니다.
+#    (게재 논문과 Accepted 논문만 표시. Revision·Under review 등은 표시 안 함)
+#  - 저널 이름은 publications.yml 의 venue 와 똑같이 적어 주세요.
+#  - 현재 값은 교수님 기존 논문 목록에 있던 값(가장 최근 논문 기준)입니다.
+#  - JCR은 Clarivate가 매년 6월쯤 새로 발표합니다. 새 값으로 바꾸면
+#    note 가 비어 있는 논문 전체에 한 번에 반영됩니다.
+#  - 새 저널에 처음 논문을 낼 때 한 줄 추가하세요. 예:
+#  "Nature Electronics": { if: 40.9, jcr: 1 }
+# ─────────────────────────────────────────────
+
+"Advanced Materials": { if: 26.8, jcr: 5 }
+"Advanced Functional Materials": { if: 19.0, jcr: 5 }
+"ACS Nano": { if: 16.1, jcr: 10 }
+"Advanced Science": { if: 14.1, jcr: 10 }
+"Science Advances": { if: 14.1, jcr: 10 }
+"Materials Horizons": { if: 13.3, jcr: 10 }
+"Small": { if: 12.1, jcr: 10 }
+"Nano Letters": { if: 11.2, jcr: 10 }
+"ACS Applied Materials & Interfaces": { if: 8.2, jcr: 20 }
+"Device": { if: 8.0, jcr: 20 }
+"Advanced Intelligent Systems": { if: 7.3, jcr: 20 }
+"Nanoscale": { if: 5.1, jcr: 25 }

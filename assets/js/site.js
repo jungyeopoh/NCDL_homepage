@@ -104,6 +104,19 @@ function metricChips(note) {
   return `<span class="metrics">${ifm ? `<span class="metric metric-if">IF ${esc(ifm[1])}</span>` : ""}${jcr ? `<span class="metric metric-jcr" data-tier="${tier <= 5 ? "top" : tier <= 10 ? "high" : "mid"}">JCR top ${esc(jcr[1])}%</span>` : ""}</span>`;
 }
 
+// 저널별 IF·JCR (data/journals.yml). 논문에 note 가 없으면 이 값을 쓴다.
+let JOURNALS = {};
+function setJournals(j) {
+  JOURNALS = {};
+  Object.entries(j || {}).forEach(([k, v]) => { JOURNALS[String(k).trim().toLowerCase()] = v; });
+}
+function journalNote(p) {
+  if (has(p.note)) return p.note;
+  const j = JOURNALS[String(p.venue || "").trim().toLowerCase()];
+  if (!j) return "";
+  return [has(j.if) ? `IF ${j.if}` : "", has(j.jcr) ? `JCR top ${j.jcr}%` : ""].filter(Boolean).join(", ");
+}
+
 function coverBadge(p) {
   return p.cover ? `<span class="badge badge-cover">${esc(typeof p.cover === "string" ? p.cover : "Cover")}</span>` : "";
 }
@@ -113,7 +126,9 @@ function pubItem(p, site, opts = {}) {
   const type = has(p.type) ? `<span class="pub-type">${esc(p.type)}</span>` : "";
   const status = has(p.status) ? `<span class="pub-status" data-status="${esc(String(p.status).toLowerCase().replace(/[^a-z]+/g, "-"))}">${esc(p.status)}</span>` : "";
   const badges = (opts.compact ? "" : roleBadges(p, site)) + coverBadge(p);
-  const metrics = opts.compact ? "" : metricChips(p.note);
+  // 게재 논문과 Accepted 논문만 IF·JCR 표시 (Revision·Under review 등은 생략)
+  const showMetrics = !has(p.status) || /accept/i.test(String(p.status));
+  const metrics = opts.compact || !showMetrics ? "" : metricChips(journalNote(p));
   const venue = has(p.venue) || has(p.detail)
     ? `<div class="pub-venue">${has(p.venue) ? `<em>${esc(p.venue)}</em>` : ""}${has(p.venue) && has(p.detail) ? ", " : ""}${has(p.detail) ? esc(p.detail) : ""}</div>` : "";
   const lead = authorRole(p, site).lead;
@@ -504,7 +519,8 @@ const PAGES = {
   },
 
   async research(site) {
-    const [research, pubs] = await Promise.all([loadYaml("research"), loadYaml("publications")]);
+    const [research, pubs, journals] = await Promise.all([loadYaml("research"), loadYaml("publications"), loadYaml("journals").catch(() => ({}))]);
+    setJournals(journals);
     const topics = list(research.topics || research);
     const ov = (DESIGN === "b" && research.overview_b) || research.overview || {};
     const byNo = new Map(list(pubs.journal).map((p) => [Number(p.no), p]));
@@ -536,7 +552,7 @@ const PAGES = {
       return `<figure class="work">
         <div class="work-img"><img src="images/research/${esc(f.image)}" alt="${esc(f.caption)}"></div>
         <figcaption>
-          ${p ? `<div class="work-tags">${metricChips(p.note)}${roleBadges(p, site)}${coverBadge(p)}</div>` : ""}
+          ${p ? `<div class="work-tags">${metricChips(journalNote(p))}${roleBadges(p, site)}${coverBadge(p)}</div>` : ""}
           <span class="work-cap">${chem(esc(f.caption))}</span>
           ${p ? `<span class="fig-cite">${cite(p)}</span>` : ""}
         </figcaption>
@@ -568,8 +584,9 @@ const PAGES = {
   },
 
   async publications(site) {
-    const [pubs, members] = await Promise.all([loadYaml("publications"), loadYaml("members").catch(() => ({}))]);
+    const [pubs, members, journals] = await Promise.all([loadYaml("publications"), loadYaml("members").catch(() => ({})), loadYaml("journals").catch(() => ({}))]);
     LAB_AUTHORS = labAuthorsFrom(members);
+    setJournals(journals);
     const STATUS_ORDER = ["accepted", "revision", "under review", "submitted", "in preparation"];
     const rank = (p) => { const i = STATUS_ORDER.indexOf(String(p.status || "").toLowerCase()); return i < 0 ? 99 : i; };
     const progress = list(pubs.in_progress).slice().sort((a, b) => rank(a) - rank(b));

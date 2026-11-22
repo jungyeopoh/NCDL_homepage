@@ -56,7 +56,7 @@ body:
     id: note
     attributes:
       label: IF / JCR 메모
-      description: "예: IF 26.8, JCR top 5%"
+      description: "비워 두면 data/journals.yml 에 있는 저널 값이 자동으로 표시됩니다. 예: IF 26.8, JCR top 5%"
   - type: checkboxes
     id: options
     attributes:
