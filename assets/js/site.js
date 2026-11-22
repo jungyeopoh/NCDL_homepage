@@ -58,19 +58,56 @@ function boldAuthors(authors, names) {
   return out;
 }
 
+// 교수(highlight_authors)가 1저자(맨 앞 또는 †)·교신(*)인지
+function authorRole(p, site) {
+  const names = list(site.highlight_authors).map((n) => String(n).toLowerCase());
+  const parts = String(p.authors || "").split(/\s*,\s*/);
+  let first = false, corr = false;
+  parts.forEach((a, i) => {
+    const bare = a.replace(/[†*‡\d\s]+$/u, "").trim().toLowerCase();
+    if (!names.includes(bare)) return;
+    if (i === 0 || a.includes("†")) first = true;
+    if (a.includes("*")) corr = true;
+  });
+  return { first, corr, lead: first || corr };
+}
+
+function roleBadges(p, site) {
+  const r = authorRole(p, site);
+  return (r.first ? `<span class="badge badge-first">First author</span>` : "") +
+         (r.corr ? `<span class="badge badge-corr">Corresponding</span>` : "");
+}
+
+// "IF 26.8, JCR top 5%" → 강조 표시
+function metricChips(note) {
+  const t = String(note || "");
+  const ifm = t.match(/IF\s*([\d.]+)/i);
+  const jcr = t.match(/top\s*([\d.]+)\s*%/i);
+  if (!ifm && !jcr) return has(t) ? `<span class="pub-note">${esc(t)}</span>` : "";
+  const tier = jcr ? Number(jcr[1]) : 100;
+  return `<span class="metrics">${ifm ? `<span class="metric metric-if">IF ${esc(ifm[1])}</span>` : ""}${jcr ? `<span class="metric metric-jcr" data-tier="${tier <= 5 ? "top" : tier <= 10 ? "high" : "mid"}">JCR top ${esc(jcr[1])}%</span>` : ""}</span>`;
+}
+
+function coverBadge(p) {
+  return p.cover ? `<span class="badge badge-cover">${esc(typeof p.cover === "string" ? p.cover : "Cover")}</span>` : "";
+}
+
 function pubItem(p, site, opts = {}) {
   const title = has(p.link) ? `<a href="${esc(p.link)}" target="_blank" rel="noopener">${chem(esc(p.title))}</a>` : chem(esc(p.title));
   const type = has(p.type) ? `<span class="pub-type">${esc(p.type)}</span>` : "";
-  const note = has(p.note) && !opts.compact ? `<span class="pub-note">${esc(p.note)}</span>` : "";
   const status = has(p.status) ? `<span class="pub-status" data-status="${esc(String(p.status).toLowerCase().replace(/[^a-z]+/g, "-"))}">${esc(p.status)}</span>` : "";
+  const badges = (opts.compact ? "" : roleBadges(p, site)) + coverBadge(p);
+  const metrics = opts.compact ? "" : metricChips(p.note);
   const venue = has(p.venue) || has(p.detail)
-    ? `<div class="pub-venue">${has(p.venue) ? `<em>${esc(p.venue)}</em>` : ""}${has(p.venue) && has(p.detail) ? ", " : ""}${has(p.detail) ? esc(p.detail) : ""}${note}</div>` : "";
-  return `<li class="pub">
+    ? `<div class="pub-venue">${has(p.venue) ? `<em>${esc(p.venue)}</em>` : ""}${has(p.venue) && has(p.detail) ? ", " : ""}${has(p.detail) ? esc(p.detail) : ""}</div>` : "";
+  const lead = authorRole(p, site).lead;
+  return `<li class="pub${lead && !opts.compact && !has(p.status) ? " pub-lead" : ""}">
     <div class="pub-no">${esc(p.no ?? "")}</div>
     <div>
       ${status}<div class="pub-title">${title}${type}</div>
       ${has(p.authors) ? `<div class="pub-authors">${boldAuthors(p.authors, site.highlight_authors)}</div>` : ""}
       ${venue}
+      ${badges || metrics ? `<div class="pub-tags">${badges}${metrics}</div>` : ""}
     </div>
   </li>`;
 }
@@ -330,74 +367,56 @@ const PAGES = {
       "Advanced Intelligent Systems": "Adv. Intell. Syst.", "Science Advances": "Sci. Adv.",
       "ACS Applied Materials & Interfaces": "ACS Appl. Mater. Interfaces",
     };
-    const cite = (n) => {
-      const p = byNo.get(Number(n));
-      if (!p) return "";
+    const cite = (p) => {
       const detail = String(p.detail || "").replace(/\s*\(\d{4}\)\s*$/, "");
       const t = `<em>${esc(ABBR[p.venue] || p.venue)}</em> <strong>${esc(p.year)}</strong>${detail ? `, ${esc(detail)}` : ""}`;
       return has(p.link) ? `<a href="${esc(p.link)}" target="_blank" rel="noopener">${t}</a>` : t;
     };
 
     // SVG 개념도는 페이지 글꼴이 적용되도록 본문에 직접 넣는다
-    const svgSrcs = [ov.why_diagram, ov.approach_diagram, ...topics.flatMap((t) => [t.diagram, t.strategy_diagram])]
-      .filter((d) => d && /\.svg$/i.test(d.image)).map((d) => d.image);
+    const svgSrcs = [ov.diagram, ...topics.map((t) => t.diagram)].filter((d) => d && /\.svg$/i.test(d.image)).map((d) => d.image);
     const svgText = new Map(await Promise.all([...new Set(svgSrcs)].map(async (src) => {
       try { const r = await fetch(`images/research/${src}`, { cache: "no-cache" }); return [src, r.ok ? await r.text() : ""]; }
       catch { return [src, ""]; }
     })));
     const diagram = (d, cls = "") => {
       if (!d || !has(d.image)) return "";
-      const inline = svgText.get(d.image);
-      const art = inline ? inline : `<img src="images/research/${esc(d.image)}" alt="${esc(d.caption || "")}">`;
+      const art = svgText.get(d.image) || `<img src="images/research/${esc(d.image)}" alt="${esc(d.caption || "")}">`;
       return `<figure class="diagram ${cls}"><div class="diagram-art">${art}</div>${has(d.caption) ? `<figcaption>${chem(esc(d.caption))}</figcaption>` : ""}</figure>`;
     };
-    const thumb = (f) => `<figure class="work">
+    const work = (f) => {
+      const p = byNo.get(Number(f.paper));
+      return `<figure class="work">
         <div class="work-img"><img src="images/research/${esc(f.image)}" alt="${esc(f.caption)}"></div>
-        <figcaption>${chem(esc(f.caption))}${has(f.paper) ? `<span class="fig-cite">${cite(f.paper)}</span>` : ""}</figcaption>
+        <figcaption>
+          ${p ? `<div class="work-tags">${metricChips(p.note)}${roleBadges(p, site)}${coverBadge(p)}</div>` : ""}
+          <span class="work-cap">${chem(esc(f.caption))}</span>
+          ${p ? `<span class="fig-cite">${cite(p)}</span>` : ""}
+        </figcaption>
       </figure>`;
-    const points = (arr, cls = "ticks") => list(arr).length ? `<ul class="${cls}">${list(arr).map((x) => `<li>${chem(esc(x))}</li>`).join("")}</ul>` : "";
+    };
 
-    const overview = has(ov.why) ? `
+    const overview = has(ov.description) ? `
       <section class="section overview"><div class="wrap">
         <div class="ov-text">
-          <h2>${esc(ov.why_title || "Why we do this")}</h2>
-          <p class="lead">${chem(esc(ov.why))}</p>
+          ${has(ov.title) ? `<h2>${esc(ov.title)}</h2>` : ""}
+          <p class="lead">${chem(esc(ov.description))}</p>
         </div>
-        ${diagram(ov.why_diagram)}
-      </div></section>
-      <section class="section overview"><div class="wrap">
-        <div class="ov-text">
-          <h2>${esc(ov.approach_title || "How we approach it")}</h2>
-          <p class="lead">${chem(esc(ov.approach))}</p>
-        </div>
-        ${diagram(ov.approach_diagram, "diagram-stack")}
+        ${diagram(ov.diagram, "diagram-stack")}
         <nav class="topic-jump" aria-label="Research topics">${topics.map((r) => `<a href="#${esc(r.id)}">${esc(r.title)}</a>`).join("")}</nav>
       </div></section>` : "";
 
-    return pageHead("Research", "Hardware for AI, built from the materials up: neuromorphic computing, next-generation memory devices, and advanced semiconductor processes.") +
+    return pageHead("Research", "Neuromorphic computing, next-generation memory devices, and advanced semiconductor processes.") +
       overview +
       topics.map((r) => `
         <section class="section topic-sec" id="${esc(r.id)}"><div class="wrap">
           <header class="topic-head">
             <h2>${esc(r.title)}</h2>
             ${has(r.title_ko) ? `<p class="ko">${esc(r.title_ko)}</p>` : ""}
-            ${has(r.summary) ? `<p class="lead">${chem(esc(r.summary))}</p>` : ""}
           </header>
-          <div class="why-what">
-            ${has(r.why) ? `<div><h3>Why it matters</h3><p>${chem(esc(r.why))}</p></div>` : ""}
-            ${has(r.what) ? `<div><h3>What we do</h3><p>${chem(esc(r.what))}</p>${points(r.what_points)}</div>` : ""}
-          </div>
+          ${has(r.description) ? `<p class="lead topic-lead">${chem(esc(r.description))}</p>` : ""}
           ${diagram(r.diagram)}
-          ${has(r.strategy) ? `<div class="strategy">
-            <div class="strategy-text">
-              <h3>Our strategy</h3>
-              <p>${chem(esc(r.strategy))}</p>
-            </div>
-            ${points(r.strategy_points, "strategy-points")}
-            ${diagram(r.strategy_diagram, "diagram-inset")}
-          </div>` : ""}
-          ${list(r.keywords).length ? `<ul class="chips">${list(r.keywords).map((k) => `<li>${chem(esc(k))}</li>`).join("")}</ul>` : ""}
-          ${list(r.figures).length ? `<div class="selected-work"><h3>Selected work</h3><div class="work-row">${list(r.figures).map(thumb).join("")}</div></div>` : ""}
+          ${list(r.figures).length ? `<div class="selected-work"><h3>Selected work</h3><div class="work-row">${list(r.figures).map(work).join("")}</div></div>` : ""}
         </div></section>`).join("");
   },
 
@@ -410,23 +429,29 @@ const PAGES = {
       .filter(([k]) => list(pubs[k]).length || (k === "journal" && progress.length));
     const nJ = list(pubs.journal).length;
     const firstYear = Math.min(...list(pubs.journal).map((p) => Number(p.year) || 9999));
-    const headText = nJ ? `${nJ} journal articles since ${firstYear}` + (progress.length ? `, with ${progress.length} more in progress.` : ".") : "";
+    const nLead = list(pubs.journal).filter((p) => authorRole(p, site).lead).length;
+    const headText = nJ ? `${nJ} journal articles since ${firstYear}, ${nLead} as first or corresponding author` + (progress.length ? `, and ${progress.length} more in progress.` : ".") : "";
     const html = pageHead("Publications", headText) + `
       <section class="section"><div class="wrap">
         <div class="pub-tools">
           <div class="tabs" role="tablist">
             ${cats.map(([k, label], i) => `<button class="tab" role="tab" data-cat="${k}" aria-selected="${i === 0}">${label}<span class="count">${list(pubs[k]).length}</span></button>`).join("")}
           </div>
-          <input class="search" type="search" placeholder="Search title, author, journal" aria-label="Search publications">
+          <div class="pub-filters">
+            <label class="toggle"><input type="checkbox" id="lead-only"> First or corresponding author only</label>
+            <input class="search" type="search" placeholder="Search title, author, journal" aria-label="Search publications">
+          </div>
         </div>
-        <p class="legend">† equal contribution, * corresponding author</p>
+        <p class="legend">† equal contribution, * corresponding author. Papers led by our lab are marked.</p>
         <div id="pub-body"></div>
       </div></section>`;
 
     setTimeout(() => {
       let cat = cats[0]?.[0];
       const body = $("#pub-body"), input = $(".search");
-      const match = (q) => (p) => !q || [p.title, p.authors, p.venue, p.year, p.status].join(" ").toLowerCase().includes(q);
+      const leadBox = $("#lead-only");
+      const match = (q) => (p) => (!leadBox.checked || authorRole(p, site).lead || has(p.status)) &&
+        (!q || [p.title, p.authors, p.venue, p.year, p.status].join(" ").toLowerCase().includes(q));
       const draw = () => {
         const q = input.value.trim().toLowerCase();
         const items = list(pubs[cat]).filter(match(q));
@@ -442,6 +467,7 @@ const PAGES = {
         cat = t.dataset.cat; draw();
       }));
       input.addEventListener("input", draw);
+      leadBox.addEventListener("change", draw);
       if (cat) draw();
     });
     return html;

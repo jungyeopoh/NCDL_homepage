@@ -422,3 +422,58 @@ files = {
 for name, content in files.items():
     (OUT / name).write_text(content, encoding="utf-8")
     print("wrote", name, len(content))
+
+
+# ------------------------------------------------------------------ 4+5. memory (hierarchy + modeling, one figure)
+def memory_combined():
+    W, H = 1000, 440
+    b = []
+    # left: hierarchy
+    b.append(text(30, 34, "Where our memories fit", "h lg"))
+    cx = 225
+    levels = [("SRAM", "cache", 52, NAVY), ("DRAM / HBM", "main memory", 108, "#0a4a80"),
+              ("NAND flash", "storage", 164, BLUE), ("HDD", "archive", 210, "#5b8fc4")]
+    top, lh, gap = 64, 60, 30
+    for k, (name, role, half, col) in enumerate(levels):
+        y = top + k * (lh + gap)
+        tw = half - 34 if k else 22
+        b.append(f'<polygon points="{cx - tw},{y} {cx + tw},{y} {cx + half},{y + lh} {cx - half},{y + lh}" fill="{col}"/>')
+        b.append(text(cx, y + lh / 2 + 1, name, "t md bold w", "middle"))
+        b.append(text(cx, y + lh / 2 + 19, role, "t sm w", "middle", 'opacity=".85"'))
+    ins = [(top + lh + gap / 2, TEAL, "On-chip, M3D memory", ["2T DRAM, oxide- and", "2D-channel transistors"]),
+           (top + 2 * (lh + gap) - gap / 2, VIOLET, "Storage-class memory", ["RRAM, transistor-based", "non-volatile memory"])]
+    for (y, col, ttl, sub) in ins:
+        b.append(f'<rect x="{cx - 130}" y="{y - 5}" width="260" height="10" rx="5" fill="{col}"/>')
+        b.append(f'<path d="M{cx + 134},{y} L452,{y}" stroke="{col}" stroke-width="1.5" stroke-dasharray="4 3"/>')
+        b.append(f'<circle cx="452" cy="{y}" r="3.5" fill="{col}"/>')
+        b.append(text(462, y - 6, ttl, "t md bold", extra=f'style="fill:{col}"'))
+        b.append(lines(462, y + 14, sub, "t sm", lh=17))
+    b.append(text(cx, top + 4 * lh + 3 * gap + 26, "faster at the top, denser and cheaper per bit below", "t sm m", "middle"))
+
+    # divider
+    b.append(f'<line x1="625" y1="30" x2="625" y2="410" stroke="{RULE}" stroke-width="1.2"/>')
+
+    # right: modeling chain (vertical)
+    b.append(text(655, 34, "How we model them", "h lg"))
+    steps = [("DFT", "atoms & defects", VIOLET), ("TCAD", "device physics", VIOLET),
+             ("Monte Carlo", "physics-based model", BLUE), ("Behavioral", "compact model", BLUE),
+             ("Circuit", "simulation & design", NAVY)]
+    bx, bw, bh, g, y0 = 655, 200, 50, 22, 62
+    b.append(f'<rect x="{bx - 12}" y="{y0 + 2 * (bh + g) - 12}" width="{bw + 24}" height="{2 * bh + g + 24}" rx="12" fill="{TINT}"/>')
+    for k, (ttl, sub, col) in enumerate(steps):
+        y = y0 + k * (bh + g)
+        b.append(f'<rect x="{bx}" y="{y}" width="{bw}" height="{bh}" rx="10" fill="#fff" stroke="{col}" stroke-width="1.6"/>')
+        b.append(text(bx + 16, y + 21, ttl, "t md bold"))
+        b.append(text(bx + 16, y + 39, sub, "t sm m"))
+        if k < 4:
+            b.append(f'<path d="M{bx + bw / 2},{y + bh + 3} L{bx + bw / 2},{y + bh + g - 3}" class="ln" marker-end="url(#arr)"/>')
+    # calibration bracket
+    yt, yb = y0 + 2 * (bh + g) + bh / 2, y0 + 3 * (bh + g) + bh / 2
+    b.append(f'<path d="M{bx + bw + 14},{yt} L{bx + bw + 26},{yt} L{bx + bw + 26},{yb} L{bx + bw + 14},{yb}" stroke="{TEAL}" stroke-width="1.6" fill="none"/>')
+    b.append(lines(bx + bw + 34, (yt + yb) / 2 - 8, ["matched and", "calibrated with", "our devices"], "t sm", lh=16).replace('class="t sm"', f'class="t sm" style="fill:{TEAL}"'))
+    return svg(W, H, "".join(b), "Where NCDL's next-generation memories fit in the hierarchy, and how they are modeled from physics to circuits")
+
+
+files["memory.svg"] = memory_combined()
+(OUT / "memory.svg").write_text(files["memory.svg"], encoding="utf-8")
+print("wrote memory.svg")

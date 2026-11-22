@@ -1,37 +1,24 @@
 # ─────────────────────────────────────────────
 #  연구 분야 (Research 페이지, 홈 화면 요약)
 #
-#  overview : 맨 위 "왜 / 어떻게" 소개 (그림 2개)
-#  topics   : 연구 분야별
-#    why       왜 필요한가
-#    what      무엇을 하는가 (+ what_points)
-#    strategy  우리 연구실의 전략 (+ strategy_points)
-#    diagram   개념도 (images/research/diagrams/*.svg)
-#    strategy_diagram  전략 그림 (선택)
-#    figures   Selected work: 논문 그림 + 설명 + 논문 번호(publications.yml journal 번호)
-#  - 개념도(SVG)는 그림 파일만 바꾸면 교체됩니다.
+#  overview : 맨 위 소개 (글 한 단락 + 그림 하나)
+#  topics   : 연구 분야별 — 글 한 단락(description) + 개념도 하나(diagram) + Selected work(figures)
+#    figures: 논문 그림 + 설명 + 논문 번호(publications.yml journal 번호).
+#             IF·JCR, 주저자/교신 표시는 publications.yml 정보로 자동 표시됩니다.
+#  - 개념도(SVG)는 그림 파일만 바꾸면 교체됩니다 (tools/make_svgs.py 로 다시 그릴 수 있음).
 #  - 문장은 교수님 설명과 논문을 바탕으로 쓴 초안입니다. 자유롭게 고쳐 쓰세요.
 # ─────────────────────────────────────────────
 
 overview:
-  why_title: "Why we do this"
-  why: >-
-    AI models are growing faster than the hardware that runs them. In a
-    conventional von Neumann computer, the processor and memory are separate,
-    and every operation moves data across the bus between them. For AI
-    workloads, that traffic, not the arithmetic, now dominates time and
-    energy. This is the memory wall.
-  why_diagram:
-    image: "diagrams/von-neumann.svg"
-    caption: "In a von Neumann computer, data shuttle between processor and memory. Neuromorphic hardware computes inside the memory array instead."
-  approach_title: "How we approach it"
-  approach: >-
-    NCDL tackles the memory wall from the bottom up. We develop new materials
-    and processes, turn them into next-generation memory devices, model those
-    devices from physics to circuits, and build neuromorphic hardware that
-    computes where data are stored. Then we measure how well real AI models
-    run on it.
-  approach_diagram:
+  title: "Hardware for AI, from the materials up"
+  description: >-
+    AI is outgrowing the hardware that runs it. In von Neumann computers,
+    moving data between processor and memory now costs more time and energy
+    than computing on it: the memory wall. NCDL attacks this wall from the
+    bottom up, with new materials and processes, next-generation memory
+    devices modeled from physics to circuits, and neuromorphic hardware that
+    we evaluate on real AI models.
+  diagram:
     image: "diagrams/research-stack.svg"
     caption: "Three connected layers of research, tied together by modeling and simulation."
 
@@ -41,38 +28,17 @@ topics:
     title: "Neuromorphic Computing"
     title_ko: "뉴로모픽 컴퓨팅"
     summary: "Artificial synapses and neurons, built into arrays and judged by how real neural networks perform on them."
-    why: >-
-      The brain processes information where it is stored, in synapses that
-      also remember. Neuromorphic hardware borrows that principle: arrays of
-      memory devices perform the multiply-and-accumulate operations at the
-      heart of neural networks directly in place, removing most of the data
-      movement.
-    what: >-
-      We build artificial synapses and neurons from next-generation memory
-      devices, engineer the functions each one needs, and fabricate them into
-      arrays that we characterize electrically.
-    what_points:
-      - "Artificial synapses with precise, reliable analog weight updates"
-      - "Single-device neurons: activation functions such as ReLU, dendritic integration, spiking"
-      - "Crossbar arrays and physical reservoir computing systems"
-    strategy: >-
-      Our focus is what happens when real devices meet real networks. We feed
-      data measured on our own arrays into state-of-the-art neural networks
-      and evaluate both accuracy and power, so device choices are judged by
-      system-level performance.
-    strategy_points:
-      - "Measured non-idealities, not idealized device models"
-      - "State-of-the-art networks: generative adversarial networks, and now Transformer networks with in-memory hardware"
-      - "System-level metrics: inference accuracy, energy, and power"
+    description: >-
+      Neuromorphic hardware computes where data are stored, the way synapses
+      do in the brain. We build artificial synapses and neurons from
+      next-generation memory devices, fabricate them into arrays, and measure
+      them. What sets our work apart is the next step: we run state-of-the-art
+      neural networks, from generative adversarial networks to Transformers,
+      on our measured device data and evaluate accuracy and power at the
+      system level.
     diagram:
       image: "diagrams/neuromorphic-flow.svg"
       caption: "From devices to network-level evaluation. Steps 3 to 5 are where our lab concentrates."
-    keywords:
-      - "In-memory computing"
-      - "Artificial synapse and neuron"
-      - "Reservoir computing"
-      - "Generative AI hardware"
-      - "Transformer"
     figures:
       - image: "gan-hardware.webp"
         caption: "A stochastic memristor array drives a generative network that synthesizes chest X-ray images."
@@ -86,43 +52,18 @@ topics:
     title: "Next-generation Memory Devices"
     title_ko: "차세대 메모리 소자"
     summary: "New memories that reinforce the hierarchy beyond DRAM and NAND, modeled from physics to circuits."
-    why: >-
-      Today's memory hierarchy of SRAM, DRAM, NAND flash, and HDD trades speed
-      for capacity at every step, and the gaps between levels cost both
-      performance and energy. The rise of high-bandwidth memory (HBM) shows how
-      much value lies in rethinking the hierarchy.
-    what: >-
-      We develop memories beyond conventional DRAM and NAND that fill those
-      gaps. Using new materials, we target memories that can be built in
-      monolithic 3D (M3D) directly above logic.
-    what_points:
-      - "RRAM and transistor-based non-volatile memories"
-      - "Memory transistors on next-generation channels such as oxide and 2D semiconductors"
-      - "2T (capacitor-less) DRAM for dense, M3D-compatible memory"
-    strategy: >-
-      Every new device we make gets a model. We build Monte Carlo, physics-based
-      models of switching and transport, match them to behavioral models, and
-      carry them into circuit simulation and circuit design. Where atomistic or
-      device-level detail matters, we link to DFT and TCAD. This full
-      simulation hierarchy tells us not only how a device works, but what it
-      is worth in a circuit.
-    strategy_points:
-      - "Monte Carlo physics-based models matched to behavioral models"
-      - "DFT and TCAD for materials and device physics"
-      - "Circuit simulation and design built on our own device models"
+    description: >-
+      The SRAM, DRAM, and NAND hierarchy leaves gaps in speed, density, and
+      energy, and the rise of HBM shows how much value lies in rethinking it.
+      We develop memories beyond DRAM and NAND, including RRAM,
+      transistor-based memories, oxide- and 2D-channel devices, and 2T DRAM,
+      that can be built in monolithic 3D. Every device we make is modeled
+      across a full simulation hierarchy: Monte Carlo physics-based models
+      matched to behavioral models, carried into circuit simulation and
+      design, and linked with TCAD and DFT.
     diagram:
-      image: "diagrams/memory-hierarchy.svg"
-      caption: "Where our memories fit in the hierarchy."
-    strategy_diagram:
-      image: "diagrams/modeling-stack.svg"
-      caption: "Our simulation hierarchy, calibrated with devices we fabricate."
-    keywords:
-      - "RRAM"
-      - "Transistor-based memory"
-      - "Oxide / 2D channel"
-      - "2T DRAM"
-      - "M3D"
-      - "Device modeling"
+      image: "diagrams/memory.svg"
+      caption: "Where our memories fit in the hierarchy, and how we model them."
     figures:
       - image: "hbn-3d-memristor.webp"
         caption: "Three-floor vertically stacked hBN memristor arrays fabricated at wafer scale."
@@ -139,38 +80,16 @@ topics:
     title: "Advanced Semiconductor Process"
     title_ko: "첨단 반도체 공정"
     summary: "Growing next-generation materials, engineering their interfaces, and stacking them on silicon in M3D."
-    why: >-
-      New devices depend on new materials, and new materials must fit into a
-      manufacturing flow built for silicon. Monolithic 3D integration, which
-      stacks device layers on top of finished silicon chips, demands films that
-      grow at low temperature and interfaces that stay clean.
-    what: >-
-      We grow and synthesize thin films of next-generation channel materials,
-      engineer their interfaces with dielectrics and metal contacts, study how
-      these choices shape device behavior, and integrate the devices on top of
-      silicon.
-    what_points:
-      - "Thin-film growth and synthesis of 2D (MoS2, Bi2O2Se) and oxide (IGZO) semiconductors"
-      - "Interfaces with metal-oxide dielectrics and metal contacts"
-      - "Low-temperature, BEOL-compatible M3D integration on silicon devices"
-    strategy: >-
-      We ask two questions of every material and process: how does it fit into
-      existing semiconductor processes, and what new process does it require?
-      Next, we will couple process development with simulation so that
-      experiments and models guide each other.
-    strategy_points:
-      - "Process compatibility first: new materials tested against existing flows"
-      - "Device-aware process development: interface and contact effects measured in devices"
-      - "Next step: process–simulation co-design"
+    description: >-
+      New devices need new materials that fit into silicon manufacturing. We
+      grow and synthesize 2D and oxide semiconductor films such as MoS2,
+      Bi2O2Se, and IGZO, engineer their interfaces with metal-oxide
+      dielectrics and metal contacts, and integrate the resulting devices on
+      top of silicon through low-temperature monolithic 3D processes. Next, we
+      will couple this process development with simulation.
     diagram:
       image: "diagrams/process-m3d.svg"
       caption: "New-material devices stacked above silicon CMOS, and the process steps we develop."
-    keywords:
-      - "2D semiconductors"
-      - "Oxide semiconductors"
-      - "Interface engineering"
-      - "Contact engineering"
-      - "Monolithic 3D integration"
     figures:
       - image: "bi2o2se-synthesis.webp"
         caption: "Low-temperature solution synthesis of Bi2O2Se on an Al-patterned substrate, with elemental mapping."
