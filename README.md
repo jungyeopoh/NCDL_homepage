@@ -19,8 +19,10 @@ data/               ← 여기만 수정하면 됩니다
   news.yml            소식
   join.yml            대학원생·인턴 모집 안내
 images/
+  brand/              NCDL 로고, CAU 심볼
   people/             구성원 사진
-  research/           연구 분야 그림
+  research/           논문 그림 (Selected work)
+  research/diagrams/  연구 분야 개념도 (SVG)
 assets/             디자인 파일 (CSS, JS, 글꼴) — 보통 수정 불필요
 *.html              페이지 틀 — 보통 수정 불필요
 scripts/pubbot.py   논문 자동화 봇 (GitHub Actions가 실행)
@@ -207,13 +209,13 @@ python3 -m http.server 8000
 
 ## 7. 올리기 전에 확인할 것
 
-- [ ] **주소**: 기존 사이트에는 `162 Heukseok-ro` 로 되어 있었는데, 중앙대 서울캠퍼스 주소는 `흑석로 84` 입니다. `data/site.yml` 에 84로 넣어 두었으니 맞는지 확인해 주세요.
-- [ ] **연구 분야 설명** (`research.yml`): 기존 논문 제목을 바탕으로 쓴 초안입니다.
+- [ ] **연구 분야 설명** (`research.yml`): 교수님 설명과 논문을 바탕으로 쓴 초안입니다 (왜 / 무엇을 / 전략).
+- [ ] **학부연구생 한글 이름** (`members.yml` 의 `name_ko`): 비워 두었습니다.
 - [ ] **교수 소개 문단** (`members.yml` 의 `bio`): 기존 학력·경력으로 쓴 초안입니다.
 - [ ] **모집 안내의 지원 사항** (`join.yml` 의 `we_offer`): 실제 처우에 맞게 수정해 주세요.
 - [ ] **소식 날짜** (`news.yml`): 논문 권호로 추정한 값입니다.
 - [ ] **DOI 링크**: `publications.yml` 의 `link:` 에 넣으면 제목이 링크가 됩니다.
-- [ ] **사진**: 교수 사진, 연구 그림(`images/research/`, `research.yml` 의 `image:`).
+- [ ] **학생 사진**: `images/people/` 에 올리고 `photo:` 에 파일명 입력 (없으면 이니셜 표시).
 - [ ] **Google Scholar 주소**: `site.yml` 의 `links:` 에 넣으면 People 페이지에 표시됩니다.
 
 ---

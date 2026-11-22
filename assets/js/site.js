@@ -37,7 +37,7 @@ async function loadYaml(name) {
 // MoS2, Bi2O2Se 같은 화학식의 숫자를 아래첨자로 표시
 function chem(html) {
   return String(html ?? "").replace(/\b((?:[A-Z][a-z]?\d*){2,})\b/g, (tok) =>
-    /\d/.test(tok) ? tok.replace(/([A-Za-z])(\d+)/g, "$1<sub>$2</sub>") : tok);
+    /\d/.test(tok) && !/^M\d+D$/.test(tok) ? tok.replace(/([A-Za-z])(\d+)/g, "$1<sub>$2</sub>") : tok);
 }
 
 function initials(name) {
@@ -147,15 +147,26 @@ function applyDesign(site) {
   document.documentElement.dataset.theme = d.theme || "paper";
 }
 
+// navy 테마처럼 헤더가 어두우면 흰색 로고를 사용
+function logoFor(d, key, darkHeader) {
+  const dark = d[`${key}_on_dark`];
+  return darkHeader && has(dark) ? dark : d[key];
+}
+
 function renderChrome(site, page) {
   const d = site.design || {};
-  const mark = has(d.logo) ? `<img class="brand-logo" src="images/${esc(d.logo)}" alt="">` : brandMark();
+  const darkHeader = d.theme === "navy";
+  const labLogo = logoFor(d, "logo", darkHeader);
+  const uniLogo = logoFor(d, "university_logo", darkHeader);
+  const brand = has(labLogo)
+    ? `<img class="brand-logo" src="images/${esc(labLogo)}" alt="${esc(site.lab_short)}">`
+    : `${brandMark()}<span class="brand-text"><span class="brand-short">${esc(site.lab_short)}</span><span class="brand-uni">${esc(site.university)}</span></span>`;
   const header = $("#site-header");
   header.className = "site-header";
   header.innerHTML = `<div class="wrap">
-    <a class="brand" href="index.html" aria-label="${esc(site.lab_name)} home">
-      ${mark}
-      <span class="brand-text"><span class="brand-short">${esc(site.lab_short)}</span><span class="brand-uni">${esc(site.university)}</span></span>
+    <a class="brand" href="index.html" aria-label="${esc(site.lab_name)}, ${esc(site.university)} home">
+      ${brand}
+      ${has(uniLogo) ? `<span class="brand-sep" aria-hidden="true"></span><img class="brand-uni-logo" src="images/${esc(uniLogo)}" alt="${esc(site.university)}">` : ""}
     </a>
     <button class="nav-toggle" aria-expanded="false" aria-controls="nav">Menu</button>
     <nav class="nav" id="nav" aria-label="Main"><ul>
@@ -172,8 +183,10 @@ function renderChrome(site, page) {
   const c = site.contact || {};
   const footer = $("#site-footer");
   footer.className = "site-footer";
+  const footUni = logoFor(d, "university_logo", darkHeader);
   footer.innerHTML = `<div class="wrap">
-    <div>
+    ${has(footUni) ? `<img class="footer-uni" src="images/${esc(footUni)}" alt="${esc(site.university)}">` : ""}
+    <div class="footer-text">
       <p><strong>${esc(site.lab_name)}</strong></p>
       <p>${esc(site.school)}, ${esc(site.college)}, ${esc(site.university)}</p>
       <p>${esc(c.office)}, ${esc(c.address)}</p>
@@ -222,7 +235,7 @@ const PAGES = {
       <section class="section"><div class="wrap">
         <div class="section-head"><h2>Research</h2><a href="research.html">All research topics</a></div>
         <ul class="topic-rows">
-          ${list(research).map((r) => `<li><a href="research.html#${esc(r.id)}">
+          ${list(research.topics || research).map((r) => `<li><a href="research.html#${esc(r.id)}">
             ${glyph(r.icon)}
             <h3>${esc(r.title)}</h3>
             <p>${esc(r.summary)}</p>
@@ -258,8 +271,9 @@ const PAGES = {
     const anyStudents = groups.some(([k]) => list(m[k]).length);
     const groupHtml = groups.filter(([k]) => list(m[k]).length).map(([k, label]) => `
       <section class="group"><h2>${label}</h2><div class="people-grid">
-        ${list(m[k]).map((s) => `<article class="person">
+        ${list(m[k]).map((s) => `<article class="person${has(s.photo) ? "" : " compact"}">
           ${avatar(s)}
+          <div class="person-info">
           <h3>${esc(s.name)}</h3>
           ${has(s.name_ko) ? `<div class="ko">${esc(s.name_ko)}${has(s.since) ? `, since ${esc(s.since)}` : ""}</div>` : ""}
           <dl>
@@ -267,6 +281,7 @@ const PAGES = {
             ${has(s.interests) ? `<dt>Research interests</dt><dd>${esc(s.interests)}</dd>` : ""}
             ${has(s.email) ? `<dt>Email</dt><dd><a href="mailto:${esc(s.email)}">${esc(s.email)}</a></dd>` : ""}
           </dl>
+          </div>
         </article>`).join("")}
       </div></section>`).join("");
 
@@ -306,21 +321,84 @@ const PAGES = {
 
   async research(site) {
     const [research, pubs] = await Promise.all([loadYaml("research"), loadYaml("publications")]);
+    const topics = list(research.topics || research);
+    const ov = research.overview || {};
     const byNo = new Map(list(pubs.journal).map((p) => [Number(p.no), p]));
-    return pageHead("Research", "We work across three connected layers: the computing paradigm, the memory devices that enable it, and the processes that make those devices manufacturable.") +
-      list(research).map((r) => {
-        const papers = list(r.papers).map((n) => byNo.get(Number(n))).filter(Boolean);
-        return `<section class="section" id="${esc(r.id)}"><div class="wrap topic">
-          <div>
+    const ABBR = {
+      "Advanced Materials": "Adv. Mater.", "Advanced Functional Materials": "Adv. Funct. Mater.",
+      "Advanced Science": "Adv. Sci.", "Materials Horizons": "Mater. Horiz.", "Nano Letters": "Nano Lett.",
+      "Advanced Intelligent Systems": "Adv. Intell. Syst.", "Science Advances": "Sci. Adv.",
+      "ACS Applied Materials & Interfaces": "ACS Appl. Mater. Interfaces",
+    };
+    const cite = (n) => {
+      const p = byNo.get(Number(n));
+      if (!p) return "";
+      const detail = String(p.detail || "").replace(/\s*\(\d{4}\)\s*$/, "");
+      const t = `<em>${esc(ABBR[p.venue] || p.venue)}</em> <strong>${esc(p.year)}</strong>${detail ? `, ${esc(detail)}` : ""}`;
+      return has(p.link) ? `<a href="${esc(p.link)}" target="_blank" rel="noopener">${t}</a>` : t;
+    };
+
+    // SVG 개념도는 페이지 글꼴이 적용되도록 본문에 직접 넣는다
+    const svgSrcs = [ov.why_diagram, ov.approach_diagram, ...topics.flatMap((t) => [t.diagram, t.strategy_diagram])]
+      .filter((d) => d && /\.svg$/i.test(d.image)).map((d) => d.image);
+    const svgText = new Map(await Promise.all([...new Set(svgSrcs)].map(async (src) => {
+      try { const r = await fetch(`images/research/${src}`, { cache: "no-cache" }); return [src, r.ok ? await r.text() : ""]; }
+      catch { return [src, ""]; }
+    })));
+    const diagram = (d, cls = "") => {
+      if (!d || !has(d.image)) return "";
+      const inline = svgText.get(d.image);
+      const art = inline ? inline : `<img src="images/research/${esc(d.image)}" alt="${esc(d.caption || "")}">`;
+      return `<figure class="diagram ${cls}"><div class="diagram-art">${art}</div>${has(d.caption) ? `<figcaption>${chem(esc(d.caption))}</figcaption>` : ""}</figure>`;
+    };
+    const thumb = (f) => `<figure class="work">
+        <div class="work-img"><img src="images/research/${esc(f.image)}" alt="${esc(f.caption)}"></div>
+        <figcaption>${chem(esc(f.caption))}${has(f.paper) ? `<span class="fig-cite">${cite(f.paper)}</span>` : ""}</figcaption>
+      </figure>`;
+    const points = (arr, cls = "ticks") => list(arr).length ? `<ul class="${cls}">${list(arr).map((x) => `<li>${chem(esc(x))}</li>`).join("")}</ul>` : "";
+
+    const overview = has(ov.why) ? `
+      <section class="section overview"><div class="wrap">
+        <div class="ov-text">
+          <h2>${esc(ov.why_title || "Why we do this")}</h2>
+          <p class="lead">${chem(esc(ov.why))}</p>
+        </div>
+        ${diagram(ov.why_diagram)}
+      </div></section>
+      <section class="section overview"><div class="wrap">
+        <div class="ov-text">
+          <h2>${esc(ov.approach_title || "How we approach it")}</h2>
+          <p class="lead">${chem(esc(ov.approach))}</p>
+        </div>
+        ${diagram(ov.approach_diagram, "diagram-stack")}
+        <nav class="topic-jump" aria-label="Research topics">${topics.map((r) => `<a href="#${esc(r.id)}">${esc(r.title)}</a>`).join("")}</nav>
+      </div></section>` : "";
+
+    return pageHead("Research", "Hardware for AI, built from the materials up: neuromorphic computing, next-generation memory devices, and advanced semiconductor processes.") +
+      overview +
+      topics.map((r) => `
+        <section class="section topic-sec" id="${esc(r.id)}"><div class="wrap">
+          <header class="topic-head">
             <h2>${esc(r.title)}</h2>
             ${has(r.title_ko) ? `<p class="ko">${esc(r.title_ko)}</p>` : ""}
-            <div class="topic-desc"><p>${chem(esc(r.description))}</p></div>
-            ${list(r.keywords).length ? `<ul class="chips">${list(r.keywords).map((k) => `<li>${esc(k)}</li>`).join("")}</ul>` : ""}
+            ${has(r.summary) ? `<p class="lead">${chem(esc(r.summary))}</p>` : ""}
+          </header>
+          <div class="why-what">
+            ${has(r.why) ? `<div><h3>Why it matters</h3><p>${chem(esc(r.why))}</p></div>` : ""}
+            ${has(r.what) ? `<div><h3>What we do</h3><p>${chem(esc(r.what))}</p>${points(r.what_points)}</div>` : ""}
           </div>
-          <div class="topic-art">${has(r.image) ? `<img src="images/research/${esc(r.image)}" alt="${esc(r.title)}">` : glyph(r.icon, 140)}</div>
-          ${papers.length ? `<div class="topic-papers"><h3>Representative papers</h3><ul class="pub-list">${papers.map((p) => pubItem(p, site, { compact: true })).join("")}</ul></div>` : ""}
-        </div></section>`;
-      }).join("");
+          ${diagram(r.diagram)}
+          ${has(r.strategy) ? `<div class="strategy">
+            <div class="strategy-text">
+              <h3>Our strategy</h3>
+              <p>${chem(esc(r.strategy))}</p>
+            </div>
+            ${points(r.strategy_points, "strategy-points")}
+            ${diagram(r.strategy_diagram, "diagram-inset")}
+          </div>` : ""}
+          ${list(r.keywords).length ? `<ul class="chips">${list(r.keywords).map((k) => `<li>${chem(esc(k))}</li>`).join("")}</ul>` : ""}
+          ${list(r.figures).length ? `<div class="selected-work"><h3>Selected work</h3><div class="work-row">${list(r.figures).map(thumb).join("")}</div></div>` : ""}
+        </div></section>`).join("");
   },
 
   async publications(site) {

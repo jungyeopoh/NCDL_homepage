@@ -10,23 +10,29 @@ lab_name_ko: "뉴로모픽 컴퓨팅 및 소자 연구실"
 university: "Chung-Ang University"
 school: "School of Integrative Engineering"
 college: "College of ICT Engineering"
-university_ko: "중앙대학교 ICT공과대학 융합공학부"
+university_ko: "중앙대학교 창의ICT공과대학 융합공학부"
 
 # ── 디자인 ───────────────────────────────────
 design:
   # 색상 테마: paper (밝은 회녹색 바탕) / white (흰 바탕) / navy (남색 첫 화면)
   theme: "paper"
   # 로고 파일 (images/ 폴더에 올리고 파일명 입력, 예: logo.svg 또는 logo.png). 비우면 기본 마크
-  logo: ""
+  logo: "brand/ncdl-logo.png"
+  # 어두운 배경(navy 테마)에서 쓸 흰색 로고
+  logo_on_dark: "brand/ncdl-logo-white.png"
+  # 학교 심볼 (헤더 로고 옆, 하단에 표시). 비우면 표시 안 함
+  university_logo: "brand/cau-symbol.png"
+  university_logo_on_dark: "brand/cau-symbol-white.png"
   # 홈 첫 화면 배경 사진 (images/ 폴더, 예: hero.jpg). 넣으면 그래프 대신 사진이 깔립니다
   hero_image: ""
 
 # 홈 화면 첫 문장
 tagline: "We build memory devices and circuits that compute the way the brain does."
 intro: >-
-  NCDL develops next-generation AI semiconductor technology, from new device
-  materials and fabrication processes to neuromorphic hardware that learns and
-  infers at a fraction of the energy of conventional computers.
+  NCDL develops next-generation AI semiconductor technology: low-dimensional
+  materials for angstrom-scale semiconductors, emerging non-volatile memories,
+  and neuromorphic hardware that overcomes the memory wall of conventional
+  von Neumann computers.
 
 # 모집 공고 (홈 화면 띠 배너). 모집하지 않을 때는 recruiting: false
 recruiting: true

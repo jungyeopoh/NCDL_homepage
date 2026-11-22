@@ -1,77 +1,180 @@
 # ─────────────────────────────────────────────
 #  연구 분야 (Research 페이지, 홈 화면 요약)
-#  - image: images/research/ 폴더에 그림을 올리고 파일명 입력 (가로 1200px 내외 권장).
-#           비워두면 기본 아이콘이 표시됩니다.
-#  - papers: 대표 논문 번호 (publications.yml 의 journal 번호)
-#  - 아래 설명은 기존 논문 제목을 바탕으로 작성한 초안입니다. 자유롭게 고쳐 쓰세요.
+#
+#  overview : 맨 위 "왜 / 어떻게" 소개 (그림 2개)
+#  topics   : 연구 분야별
+#    why       왜 필요한가
+#    what      무엇을 하는가 (+ what_points)
+#    strategy  우리 연구실의 전략 (+ strategy_points)
+#    diagram   개념도 (images/research/diagrams/*.svg)
+#    strategy_diagram  전략 그림 (선택)
+#    figures   Selected work: 논문 그림 + 설명 + 논문 번호(publications.yml journal 번호)
+#  - 개념도(SVG)는 그림 파일만 바꾸면 교체됩니다.
+#  - 문장은 교수님 설명과 논문을 바탕으로 쓴 초안입니다. 자유롭게 고쳐 쓰세요.
 # ─────────────────────────────────────────────
 
-- id: neuromorphic
-  icon: spikes
-  title: "Neuromorphic Computing"
-  title_ko: "뉴로모픽 컴퓨팅"
-  summary: "Hardware that learns and infers like the brain, built from artificial synapses and neurons."
-  description: >-
-    Conventional computers shuttle data back and forth between memory and
-    processor, and that traffic now dominates the energy cost of AI. We build
-    neuromorphic hardware in which memory and computation happen in the same
-    place. Our work covers memristive synapses with precise analog weight
-    updates, artificial neurons that implement activation functions such as
-    ReLU and dendritic integration in a single device, and physical reservoir
-    computing systems that use the intrinsic dynamics of devices to process
-    time-series data. We also explore stochastic devices for spiking neural
-    networks and generative models.
-  keywords:
-    - "Memristive synapse"
-    - "Artificial neuron"
-    - "Reservoir computing"
-    - "Spiking neural network"
-    - "In-memory computing"
-  image: ""
-  papers: [23, 20, 17, 11]
+overview:
+  why_title: "Why we do this"
+  why: >-
+    AI models are growing faster than the hardware that runs them. In a
+    conventional von Neumann computer, the processor and memory are separate,
+    and every operation moves data across the bus between them. For AI
+    workloads, that traffic, not the arithmetic, now dominates time and
+    energy. This is the memory wall.
+  why_diagram:
+    image: "diagrams/von-neumann.svg"
+    caption: "In a von Neumann computer, data shuttle between processor and memory. Neuromorphic hardware computes inside the memory array instead."
+  approach_title: "How we approach it"
+  approach: >-
+    NCDL tackles the memory wall from the bottom up. We develop new materials
+    and processes, turn them into next-generation memory devices, model those
+    devices from physics to circuits, and build neuromorphic hardware that
+    computes where data are stored. Then we measure how well real AI models
+    run on it.
+  approach_diagram:
+    image: "diagrams/research-stack.svg"
+    caption: "Three connected layers of research, tied together by modeling and simulation."
 
-- id: memory
-  icon: hysteresis
-  title: "Next-generation Memory Device"
-  title_ko: "차세대 메모리 소자"
-  summary: "Reliable, low-power memories from 2D semiconductors, hybrid films, and charge-trap stacks."
-  description: >-
-    The performance of neuromorphic and edge AI systems depends on the memory
-    devices underneath them. We design resistive switching memories (RRAM and
-    CBRAM), charge trap memories, and electrolyte-gated synaptic transistors
-    using two-dimensional materials such as MoS2, hexagonal boron nitride, and
-    Bi2O2Se, as well as organic–inorganic hybrid dielectrics. Our focus is on
-    controlling the switching mechanism at the atomic scale, through
-    conductive-filament engineering, band engineering, and crystallinity
-    control, so that devices are uniform, reliable, and ready for large arrays.
-  keywords:
-    - "RRAM / CBRAM"
-    - "Charge trap memory"
-    - "2D materials"
-    - "Electrolyte-gated transistor"
-    - "Reliability"
-  image: ""
-  papers: [25, 16, 15, 12]
+topics:
+  - id: neuromorphic
+    icon: spikes
+    title: "Neuromorphic Computing"
+    title_ko: "뉴로모픽 컴퓨팅"
+    summary: "Artificial synapses and neurons, built into arrays and judged by how real neural networks perform on them."
+    why: >-
+      The brain processes information where it is stored, in synapses that
+      also remember. Neuromorphic hardware borrows that principle: arrays of
+      memory devices perform the multiply-and-accumulate operations at the
+      heart of neural networks directly in place, removing most of the data
+      movement.
+    what: >-
+      We build artificial synapses and neurons from next-generation memory
+      devices, engineer the functions each one needs, and fabricate them into
+      arrays that we characterize electrically.
+    what_points:
+      - "Artificial synapses with precise, reliable analog weight updates"
+      - "Single-device neurons: activation functions such as ReLU, dendritic integration, spiking"
+      - "Crossbar arrays and physical reservoir computing systems"
+    strategy: >-
+      Our focus is what happens when real devices meet real networks. We feed
+      data measured on our own arrays into state-of-the-art neural networks
+      and evaluate both accuracy and power, so device choices are judged by
+      system-level performance.
+    strategy_points:
+      - "Measured non-idealities, not idealized device models"
+      - "State-of-the-art networks: generative adversarial networks, and now Transformer networks with in-memory hardware"
+      - "System-level metrics: inference accuracy, energy, and power"
+    diagram:
+      image: "diagrams/neuromorphic-flow.svg"
+      caption: "From devices to network-level evaluation. Steps 3 to 5 are where our lab concentrates."
+    keywords:
+      - "In-memory computing"
+      - "Artificial synapse and neuron"
+      - "Reservoir computing"
+      - "Generative AI hardware"
+      - "Transformer"
+    figures:
+      - image: "gan-hardware.webp"
+        caption: "A stochastic memristor array drives a generative network that synthesizes chest X-ray images."
+        paper: 14
+      - image: "dnn-hardware.webp"
+        caption: "General-purpose DNN hardware: a synaptic crossbar paired with memristive ReLU neurons."
+        paper: 11
 
-- id: process
-  icon: layers
-  title: "Advanced Semiconductor Process"
-  title_ko: "첨단 반도체 공정"
-  summary: "Low-temperature, flexible, and CMOS-compatible processes that take new devices from lab to chip."
-  description: >-
-    New devices only matter if they can be made at scale. We develop
-    fabrication processes that bring emerging materials onto practical
-    platforms: low-temperature solution deposition of 2D semiconductors on
-    amorphous substrates, local flash annealing for low-resistance contacts,
-    vapor-deposited polymer and hybrid thin films, and processes compatible
-    with flexible substrates and nanoscale CMOS. We also study the long-term
-    reliability of oxide thin-film transistors under electrical and optical
-    stress.
-  keywords:
-    - "Low-temperature process"
-    - "Contact engineering"
-    - "Flexible electronics"
-    - "CMOS integration"
-    - "Oxide TFT reliability"
-  image: ""
-  papers: [19, 18, 3, 13]
+  - id: memory
+    icon: hysteresis
+    title: "Next-generation Memory Devices"
+    title_ko: "차세대 메모리 소자"
+    summary: "New memories that reinforce the hierarchy beyond DRAM and NAND, modeled from physics to circuits."
+    why: >-
+      Today's memory hierarchy of SRAM, DRAM, NAND flash, and HDD trades speed
+      for capacity at every step, and the gaps between levels cost both
+      performance and energy. The rise of high-bandwidth memory (HBM) shows how
+      much value lies in rethinking the hierarchy.
+    what: >-
+      We develop memories beyond conventional DRAM and NAND that fill those
+      gaps. Using new materials, we target memories that can be built in
+      monolithic 3D (M3D) directly above logic.
+    what_points:
+      - "RRAM and transistor-based non-volatile memories"
+      - "Memory transistors on next-generation channels such as oxide and 2D semiconductors"
+      - "2T (capacitor-less) DRAM for dense, M3D-compatible memory"
+    strategy: >-
+      Every new device we make gets a model. We build Monte Carlo, physics-based
+      models of switching and transport, match them to behavioral models, and
+      carry them into circuit simulation and circuit design. Where atomistic or
+      device-level detail matters, we link to DFT and TCAD. This full
+      simulation hierarchy tells us not only how a device works, but what it
+      is worth in a circuit.
+    strategy_points:
+      - "Monte Carlo physics-based models matched to behavioral models"
+      - "DFT and TCAD for materials and device physics"
+      - "Circuit simulation and design built on our own device models"
+    diagram:
+      image: "diagrams/memory-hierarchy.svg"
+      caption: "Where our memories fit in the hierarchy."
+    strategy_diagram:
+      image: "diagrams/modeling-stack.svg"
+      caption: "Our simulation hierarchy, calibrated with devices we fabricate."
+    keywords:
+      - "RRAM"
+      - "Transistor-based memory"
+      - "Oxide / 2D channel"
+      - "2T DRAM"
+      - "M3D"
+      - "Device modeling"
+    figures:
+      - image: "hbn-3d-memristor.webp"
+        caption: "Three-floor vertically stacked hBN memristor arrays fabricated at wafer scale."
+        paper: 16
+      - image: "cu-imidazole-memristor.webp"
+        caption: "Copper–imidazole interaction creates many weak filaments for a highly reliable memristor."
+        paper: 7
+      - image: "charge-trap-decay.webp"
+        caption: "Band-engineered charge-trap stack with tunable spontaneous decay."
+        paper: 20
+
+  - id: process
+    icon: layers
+    title: "Advanced Semiconductor Process"
+    title_ko: "첨단 반도체 공정"
+    summary: "Growing next-generation materials, engineering their interfaces, and stacking them on silicon in M3D."
+    why: >-
+      New devices depend on new materials, and new materials must fit into a
+      manufacturing flow built for silicon. Monolithic 3D integration, which
+      stacks device layers on top of finished silicon chips, demands films that
+      grow at low temperature and interfaces that stay clean.
+    what: >-
+      We grow and synthesize thin films of next-generation channel materials,
+      engineer their interfaces with dielectrics and metal contacts, study how
+      these choices shape device behavior, and integrate the devices on top of
+      silicon.
+    what_points:
+      - "Thin-film growth and synthesis of 2D (MoS2, Bi2O2Se) and oxide (IGZO) semiconductors"
+      - "Interfaces with metal-oxide dielectrics and metal contacts"
+      - "Low-temperature, BEOL-compatible M3D integration on silicon devices"
+    strategy: >-
+      We ask two questions of every material and process: how does it fit into
+      existing semiconductor processes, and what new process does it require?
+      Next, we will couple process development with simulation so that
+      experiments and models guide each other.
+    strategy_points:
+      - "Process compatibility first: new materials tested against existing flows"
+      - "Device-aware process development: interface and contact effects measured in devices"
+      - "Next step: process–simulation co-design"
+    diagram:
+      image: "diagrams/process-m3d.svg"
+      caption: "New-material devices stacked above silicon CMOS, and the process steps we develop."
+    keywords:
+      - "2D semiconductors"
+      - "Oxide semiconductors"
+      - "Interface engineering"
+      - "Contact engineering"
+      - "Monolithic 3D integration"
+    figures:
+      - image: "bi2o2se-synthesis.webp"
+        caption: "Low-temperature solution synthesis of Bi2O2Se on an Al-patterned substrate, with elemental mapping."
+        paper: 17
+      - image: "mos2-egt.webp"
+        caption: "MoS2 transistor on a tunable organic–inorganic hybrid AlOx dielectric."
+        paper: 15
