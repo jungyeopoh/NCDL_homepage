@@ -2,7 +2,7 @@
 import math
 from pathlib import Path
 
-OUT = Path("/home/claude/ncdl/images/research/diagrams")
+OUT = Path(__file__).resolve().parent.parent / "images" / "research" / "diagrams"  # python3 tools/make_svgs.py
 OUT.mkdir(parents=True, exist_ok=True)
 
 NAVY = "#053863"
