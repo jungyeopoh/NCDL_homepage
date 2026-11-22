@@ -145,30 +145,50 @@ function loopPoints(amp, cx, cy, rx, ry, iMax) {
   return "M" + pts.join("L");
 }
 
-function heroLoop() {
-  const W = 520, H = 420, cx = W / 2, cy = H / 2, rx = 210, ry = 170;
-  const amps = [1, 0.55, 0.26];
-  const iMax = 0.12 + 0.88 * 0.85; // ≈ peak current of the widest loop
-  const paths = amps.map((a, n) =>
-    `<path class="loop-path" pathLength="1" stroke="url(#film${n})" d="${loopPoints(a, cx, cy, rx, ry, iMax)}"/>`
-  ).join("");
-  const grads = [
-    ["--film-1", "--film-2", "--film-3"],
-    ["--film-3", "--film-4"],
-    ["--film-4", "--film-5"],
-  ].map((stops, n) => `<linearGradient id="film${n}" x1="0" y1="1" x2="1" y2="0">${stops
-    .map((s, j) => `<stop offset="${stops.length === 1 ? 0 : j / (stops.length - 1)}" stop-color="var(${s})"/>`).join("")}</linearGradient>`).join("");
-  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-labelledby="loopTitle">
-    <title id="loopTitle">Current–voltage curves of a memristor at three frequencies, each forming a loop pinched at the origin</title>
-    <defs>${grads}</defs>
-    <line class="loop-axis" x1="20" y1="${cy}" x2="${W - 20}" y2="${cy}"/>
-    <line class="loop-axis" x1="${cx}" y1="14" x2="${cx}" y2="${H - 14}"/>
-    <text class="loop-tick" x="${W - 18}" y="${cy - 10}" text-anchor="end">V</text>
-    <text class="loop-tick" x="${cx + 10}" y="26">I</text>
-    ${paths}
-    <g class="loop-legend">
-      <text x="${W - 20}" y="${H - 44}" text-anchor="end">low frequency: wide loop</text>
-      <text x="${W - 20}" y="${H - 24}" text-anchor="end">high frequency: loop collapses</text>
+// 홈 첫 화면 그림: 멤리스터 크로스바 어레이 (등각 투영).
+// 교차점마다 메모리 셀이 있고, 셀 색은 박막 간섭색처럼 저장된 가중치에 따라 달라진다.
+function heroArray() {
+  const W = 1000, H = 640, ox = 1010, oy = 36, ax = 26, ay = 13, h = 15, N = 26, M = 37;
+  const P = (i, j, z = 0) => [ox + (i - j) * ax, oy + (i + j) * ay - z];
+  const f = (n) => n.toFixed(1);
+  const stops = [[224, 167, 101], [169, 123, 224], [91, 141, 255], [63, 208, 201], [240, 205, 74]];
+  const color = (v) => {
+    const t = Math.min(0.9999, Math.max(0, v)) * (stops.length - 1), k = Math.floor(t), u = t - k;
+    const c = stops[k].map((a, n) => Math.round(a + (stops[k + 1][n] - a) * u));
+    return `rgb(${c[0]},${c[1]},${c[2]})`;
+  };
+  const weight = (i, j) => 0.5 + 0.5 * Math.sin(i * 0.31 + j * 0.17 + 0.6) * Math.cos(j * 0.23 - i * 0.11);
+  const seen = ([x, y]) => x > -40 && x < W + 40 && y > -40 && y < H + 40;
+  const line = (a, b, cls) => `<line class="${cls}" x1="${f(a[0])}" y1="${f(a[1])}" x2="${f(b[0])}" y2="${f(b[1])}"/>`;
+
+  let bottom = "", top = "", cells = "", pulses = "";
+  for (let j = 0; j <= M; j++) bottom += line(P(-1, j), P(N, j), "bl");
+  for (let i = 0; i <= N; i++) top += line(P(i, -1, h), P(i, M + 1, h), "wl-shadow") ;
+  for (let i = 0; i <= N; i++) top += line(P(i, -1, h + 2.5), P(i, M + 1, h + 2.5), "wl");
+  for (let j = 0; j <= M; j++) for (let i = 0; i <= N; i++) {
+    const a = P(i, j, 2.5), b = P(i, j, h - 1);
+    if (!seen(a)) continue;
+    const v = weight(i, j), depth = Math.min(1, Math.max(0, (a[1] - 60) / 420));
+    cells += `<line x1="${f(a[0])}" y1="${f(a[1])}" x2="${f(b[0])}" y2="${f(b[1])}" stroke="${color(v)}" opacity="${(0.35 + 0.65 * depth * (0.55 + 0.45 * v)).toFixed(2)}" style="--d:${Math.round(Math.max(0, a[0]) * 1.3)}ms"/>`;
+  }
+  [9, 16, 22, 29].forEach((j, n) => {
+    const a = P(-1, j, 0), b = P(N, j, 0);
+    pulses += `<path class="pulse" pathLength="1" d="M${f(a[0])},${f(a[1])}L${f(b[0])},${f(b[1])}" style="animation-delay:${n * 1.7 + 2}s"/>`;
+  });
+  const tip = P(0, 14, h + 2.5);
+  return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMinYMin slice" role="img" aria-labelledby="arrayTitle">
+    <title id="arrayTitle">A memristor crossbar array: every crossing of two electrodes is a memory cell that stores one synaptic weight</title>
+    <defs><filter id="cellGlow" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="5"/></filter></defs>
+    <g class="arr-bottom">${bottom}</g>
+    <g class="arr-pulses">${pulses}</g>
+    <g class="arr-cells arr-glow" filter="url(#cellGlow)">${cells}</g>
+    <g class="arr-cells">${cells}</g>
+    <g class="arr-top">${top}</g>
+    <g class="arr-note">
+      <path d="M${f(tip[0] - 3)},${f(tip[1] - 5)} L${f(tip[0] - 30)},${f(tip[1] - 46)} L${f(tip[0] - 44)},${f(tip[1] - 46)}"/>
+      <circle cx="${f(tip[0])}" cy="${f(tip[1])}" r="5"/>
+      <text x="${f(tip[0] - 52)}" y="${f(tip[1] - 52)}" text-anchor="end">Each crossing is a memory cell</text>
+      <text x="${f(tip[0] - 52)}" y="${f(tip[1] - 30)}" text-anchor="end">that stores one synaptic weight</text>
     </g>
   </svg>`;
 }
@@ -236,7 +256,7 @@ function renderChrome(site, page) {
   const c = site.contact || {};
   const footer = $("#site-footer");
   footer.className = "site-footer";
-  const footUni = logoFor(d, "university_logo", darkHeader);
+  const footUni = logoFor(d, "university_logo", true);
   footer.innerHTML = `<div class="wrap">
     ${has(footUni) ? `<img class="footer-uni" src="images/${esc(footUni)}" alt="${esc(site.university)}">` : ""}
     <div class="footer-text">
@@ -264,8 +284,8 @@ const PAGES = {
     const selected = list(pubs.journal).filter((p) => p.selected).slice(0, 4);
     const latest = list(news).slice(0, 5);
     return `
-      <section class="hero${has(site.design?.hero_image) ? " has-image" : ""}"${has(site.design?.hero_image) ? ` style="--hero-photo:url('images/${esc(site.design.hero_image)}')"` : ""}><div class="wrap">
-        <div>
+      <section class="hero${has(site.design?.hero_image) ? " has-image" : ""}"${has(site.design?.hero_image) ? ` style="--hero-photo:url('images/${esc(site.design.hero_image)}')"` : ""}>
+        <div class="wrap"><div class="hero-text">
           <p class="affil">${esc(site.school)}, ${esc(site.university)}</p>
           <h1>${esc(site.lab_name)}</h1>
           <p class="lede">${esc(site.tagline)}</p>
@@ -274,12 +294,9 @@ const PAGES = {
             <a class="btn btn-primary" href="research.html">Explore our research</a>
             <a class="btn btn-ghost" href="join.html">Join the lab</a>
           </div>
-        </div>
-        <figure class="loop-figure">
-          ${heroLoop()}
-          <figcaption>A memristor's current traces a loop pinched at zero that shrinks as the drive frequency rises. This memory of past signals is what lets a single device act as a synapse.</figcaption>
-        </figure>
-      </div></section>
+        </div></div>
+        ${has(site.design?.hero_image) ? "" : `<div class="hero-art">${heroArray()}</div>`}
+      </section>
 
       ${site.recruiting ? `<section class="recruit" aria-label="Recruitment"><div class="wrap">
         <p>${esc(site.recruiting_text)}</p><a href="join.html">How to apply</a>

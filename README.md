@@ -176,11 +176,13 @@ ms:
 `data/site.yml` 의 `design:` 에서:
 ```yaml
 design:
-  theme: "paper"       # paper (밝은 회녹색) / white (흰 바탕) / navy (남색 첫 화면)
-  logo: "logo.svg"     # images/ 폴더에 올린 로고 파일
-  hero_image: ""       # images/ 폴더에 올린 사진 → 홈 첫 화면 배경 (그래프 대신)
+  theme: "paper"       # 본문 바탕: paper (밝은 회녹색) / white (흰 바탕) / navy (메뉴까지 남색)
+  logo: "brand/ncdl-logo.png"   # images/ 폴더 기준 로고 파일
+  hero_image: ""       # images/ 폴더에 올린 사진 → 홈 첫 화면 배경 (크로스바 어레이 그림 대신)
 ```
-세부 색상은 `assets/css/style.css` 맨 위 `:root` 값으로 바꿀 수 있습니다.
+- 홈 첫 화면은 남색 바탕에 멤리스터 크로스바 어레이 그림입니다 (`assets/js/site.js` 의 `heroArray`).
+  실험실·웨이퍼 사진을 쓰고 싶으면 `hero_image` 에 파일명을 넣으면 사진으로 바뀝니다.
+- 세부 색상은 `assets/css/style.css` 맨 위 `:root` 값으로 바꿀 수 있습니다.
 
 ### 메뉴 이름·순서 바꾸기
 `assets/js/site.js` 맨 위 `NAV` 목록을 수정합니다.
