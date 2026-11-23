@@ -27,11 +27,6 @@
 in_progress:
   # role: 저자 목록을 다 적지 않을 때 교수 역할 표시용 (first / corresponding / first, corresponding)
   # 연구실 학생 이름은 members.yml 과 같으면 자동으로 밑줄 표시됩니다.
-  - status: "Accepted"
-    title: "Controlling Memristor Stochasticity for Synaptic Computing and Hardware Security"
-    authors: "Kyung-Min Kim†, Ui Do Ji†, Byung Chul Jang*, Jungyeop Oh*"
-    venue: "Materials Horizons"
-
   - status: "Revision"
     title: "Transistor-based soma and dendrite devices for dendritic neural networks"
     authors: ""
@@ -77,6 +72,15 @@ in_progress:
     venue: ""
 
 journal:
+  - no: 26
+    year: 2026
+    title: "Controlling Memristor Stochasticity for Synaptic Computing and Hardware Security"
+    authors: "Kyung-Min Kim†, Ui Do Ji†, Jungyeop Oh*, Byung Chul Jang*"
+    venue: "Materials Horizons"
+    detail: "in press (2026)"
+    note: ""
+    link: "https://doi.org/10.1039/D6MH01915C"
+
   - no: 25
     year: 2026
     title: "Tailoring Synaptic Properties of the Band-Engineered Charge Trap Memory for a Flexible Edge Neuromorphic Processor"

@@ -14,7 +14,7 @@ Reply to him in Korean.
 
 ## Data conventions
 - `publications.yml`
-  - `journal:` newest first, `no` increments. `note: "IF x, JCR top y%"` only if it differs from `journals.yml`.
+  - `journal:` newest first, `no` increments. Papers online without volume/pages use `detail: "in press (YEAR)"`; fill in volume/pages later. `note: "IF x, JCR top y%"` only if it differs from `journals.yml`.
   - `in_progress:` with `status` (In preparation / Submitted / Under review / Revision / Accepted). IF/JCR shows for Accepted and published papers only.
   - `role: first | corresponding | "first, corresponding"` when the full author list is not public yet.
   - † = (co-)first author, * = corresponding. "First author" / "Corresponding" badges are derived from marks on "Jungyeop Oh" (or `role`).
@@ -35,7 +35,7 @@ Reply to him in Korean.
 
 ## Open items (ask when relevant)
 - Korean names of the undergraduate interns (he says 윤성민; the English name is Seokmin Youn).
-- Spelling "Ui Do Ji" on the accepted Materials Horizons paper.
+- Spelling "Ui Do Ji" on journal #26 (Crossref lists "UI Do Ji").
 - Bi2O2Se synthesis figure is cited as ACS Nano 19, 638 (from his slides); it may belong to ACS Nano 19, 5406.
 - Which papers were journal covers; ORCID iD; school domain (ncdl.cau.ac.kr, CNAME to jungyeopoh.github.io, then Settings → Pages → Custom domain, done by him).
 - Which JCR year the current IF values are from.

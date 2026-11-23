@@ -7,6 +7,10 @@
 #  - 날짜는 논문 정보로 추정한 값이니 정확한 날짜로 고쳐 주세요.
 # ─────────────────────────────────────────────
 
+- date: "2026.11"
+  tag: "Paper"
+  text: "Our paper led by undergraduate researcher Kyung-Min Kim, “Controlling Memristor Stochasticity for Synaptic Computing and Hardware Security,” was published in <em>Materials Horizons</em>."
+
 - date: "2026.01"
   tag: "Paper"
   text: "Our paper on band-engineered charge trap memory for flexible edge neuromorphic processors was published in <em>ACS Applied Materials &amp; Interfaces</em>."
