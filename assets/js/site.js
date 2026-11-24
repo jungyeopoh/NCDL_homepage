@@ -465,7 +465,7 @@ const PAGES = {
       ["phd", "Ph.D. students"],
       ["integrated", "Integrated M.S.–Ph.D. students"],
       ["ms", "M.S. students"],
-      ["interns", "Undergraduate interns"],
+      ["interns", "Undergraduate researchers"],
     ];
     const anyStudents = groups.some(([k]) => list(m[k]).length);
     const groupHtml = groups.filter(([k]) => list(m[k]).length).map(([k, label]) => `
@@ -512,7 +512,7 @@ const PAGES = {
 
         ${anyStudents ? groupHtml : `<section class="group"><h2>Students</h2>
           <div class="empty"><p><strong>We are building our first cohort.</strong></p>
-          <p>Graduate students and undergraduate interns who join now will shape the lab's research direction from the start. See <a href="join.html">Join us</a> for how to apply.</p></div>
+          <p>Graduate students and undergraduate researchers who join now will shape the lab's research direction from the start. See <a href="join.html">Join us</a> for how to apply.</p></div>
         </section>`}
         ${alumni}
       </div></section>`;
