@@ -114,8 +114,9 @@ GitHub 앱(휴대폰)에서도 똑같이 됩니다. **저장소 주인 계정으
 
 - 상태 종류: `In preparation` → `Submitted` → `Under review` → `Revision` → `Accepted` → `Published`
 - 공동 1저자(†)·교신저자(*) 표시는 자동으로 알 수 없으니 필요하면 `data/publications.yml` 에서 다듬어 주세요.
-- **IF·JCR**은 `data/journals.yml` 의 저널 값이 자동으로 붙습니다 (게재·Accepted 논문만). 새 저널은 한 줄 추가,
-  매년 6월 JCR 발표 후 값만 바꾸면 전체에 반영됩니다. 특정 논문만 다르게 쓰려면 그 논문의 `note` 에 적으세요.
+- **IF·JCR**은 논문을 올릴 때 그 시점의 최신 값을 찾아 그 논문의 `note` 에 적습니다 (예: `IF 11.4, JCR top 11.2%`).
+  JCR 상위 %는 저널이 속한 분야 중 가장 좋은 분야의 순위 ÷ 저널 수입니다. 게재·Accepted 논문만 표시됩니다.
+  `note` 가 비어 있으면 `data/journals.yml` (최신 JCR 값 조회표)의 값이 붙습니다. 이 표는 매년 6월 JCR 발표 후 새 값으로 바꿉니다.
 - 잘못 처리되면 봇이 이유를 댓글로 남깁니다. 이슈 본문을 Edit 으로 고친 뒤 댓글 `/retry`.
 - ⚠️ 저장소가 공개라 `publications.yml` 은 누구나 볼 수 있습니다. 투고 전 논문 제목은 공개해도 되는 수준으로 적으세요.
 

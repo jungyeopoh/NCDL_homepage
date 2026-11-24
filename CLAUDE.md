@@ -14,12 +14,13 @@ Reply to him in Korean.
 
 ## Data conventions
 - `publications.yml`
-  - `journal:` newest first, `no` increments. Papers online without volume/pages use `detail: "in press (YEAR)"`; fill in volume/pages later. `note: "IF x, JCR top y%"` only if it differs from `journals.yml`.
+  - `journal:` newest first, `no` increments. Papers online without volume/pages use `detail: "in press (YEAR)"`; fill in volume/pages later. Every new or newly published paper gets `note: "IF x, JCR top y%"` with the journal's **current** values, looked up at that moment (latest JCR release, not old values from the table or earlier papers). The note freezes the value; existing papers keep theirs unless he asks.
   - `in_progress:` with `status` (In preparation / Submitted / Under review / Revision / Accepted). IF/JCR shows for Accepted and published papers only.
   - `role: first | corresponding | "first, corresponding"` when the full author list is not public yet.
   - † = (co-)first author, * = corresponding. "First author" / "Corresponding" badges are derived from marks on "Jungyeop Oh" (or `role`).
   - `cover: true` (or text like "Front Cover") adds a cover badge. `selected: true` shows the paper on the home page.
-- `journals.yml`: IF and JCR rank per journal (venue name must match exactly). Update yearly after JCR release (June).
+- `journals.yml`: lookup table of the latest IF and JCR per journal (venue name must match exactly), with `rank:` (category and x/y). Currently JCR June 2026 (2025 JIF). Refresh all rows after each June JCR release. Used only by papers with an empty `note`.
+- JCR top % = best category rank / category size × 100, one decimal (e.g. Materials Horizons 28/250 → 11.2). Clarivate JCR is paywalled; LetPub ("Quartiles By JIF", lists at most 4 categories) and ai4paper/fabiao (all categories) mirror it. The publisher's own page is the best source for the IF.
 - `members.yml`: groups `postdocs, phd, integrated, ms, interns, alumni`. `aliases:` lets a student be underlined in author lists under another spelling.
 - `research.yml`: `overview` (design A), `overview_b` (design B, current), `topics` with one paragraph, one diagram, and `figures` (Selected work; `paper:` = journal number).
 - `news.yml`: newest first. `join.yml`: graduate students only; no intern recruitment (CAU students who want grad school may intern after an interview).
@@ -38,4 +39,4 @@ Reply to him in Korean.
 - Spelling "Ui Do Ji" on journal #26 (Crossref lists "UI Do Ji").
 - Bi2O2Se synthesis figure is cited as ACS Nano 19, 638 (from his slides); it may belong to ACS Nano 19, 5406.
 - Which papers were journal covers; ORCID iD; school domain (ncdl.cau.ac.kr, CNAME to jungyeopoh.github.io, then Settings → Pages → Custom domain, done by him).
-- Which JCR year the current IF values are from.
+- IF values on papers #1–#25 are his own (mostly the values current when he listed them); ask before refreshing them.

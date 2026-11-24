@@ -1,24 +1,24 @@
 # ─────────────────────────────────────────────
-#  저널별 Impact Factor · JCR 순위
-#  - 논문에 note(IF 메모)를 따로 적지 않으면 여기 값이 자동으로 표시됩니다.
-#    (게재 논문과 Accepted 논문만 표시. Revision·Under review 등은 표시 안 함)
+#  저널별 Impact Factor · JCR 순위 (최신값 조회표)
+#  - 기준: JCR 2026년 6월 발표분 (2025 JIF). 확인일 2026-11-24.
+#  - jcr = 저널이 속한 JCR 분야 중 가장 좋은 분야의 순위 ÷ 전체 저널 수 × 100 (상위 %).
+#    rank 에 그 분야와 순위를 적어 둡니다.
+#  - 새 논문을 추가할 때는 그때의 최신 IF·JCR을 확인해서 논문의 note 에
+#    "IF x, JCR top y%" 로 적습니다. 그래서 이미 올라간 논문의 값은 바뀌지 않습니다.
+#  - note 가 비어 있는 논문만 이 표의 값을 씁니다 (게재·Accepted 논문만 표시).
 #  - 저널 이름은 publications.yml 의 venue 와 똑같이 적어 주세요.
-#  - 현재 값은 교수님 기존 논문 목록에 있던 값(가장 최근 논문 기준)입니다.
-#  - JCR은 Clarivate가 매년 6월쯤 새로 발표합니다. 새 값으로 바꾸면
-#    note 가 비어 있는 논문 전체에 한 번에 반영됩니다.
-#  - 새 저널에 처음 논문을 낼 때 한 줄 추가하세요. 예:
-#  "Nature Electronics": { if: 40.9, jcr: 1 }
+#  - JCR은 Clarivate가 매년 6월쯤 새로 발표합니다. 발표 후 이 표를 새 값으로 바꿔 주세요.
 # ─────────────────────────────────────────────
 
-"Advanced Materials": { if: 26.8, jcr: 5 }
-"Advanced Functional Materials": { if: 19.0, jcr: 5 }
-"ACS Nano": { if: 16.1, jcr: 10 }
-"Advanced Science": { if: 14.1, jcr: 10 }
-"Science Advances": { if: 14.1, jcr: 10 }
-"Materials Horizons": { if: 13.3, jcr: 10 }
-"Small": { if: 12.1, jcr: 10 }
-"Nano Letters": { if: 11.2, jcr: 10 }
-"ACS Applied Materials & Interfaces": { if: 8.2, jcr: 20 }
-"Device": { if: 8.0, jcr: 20 }
-"Advanced Intelligent Systems": { if: 7.3, jcr: 20 }
-"Nanoscale": { if: 5.1, jcr: 25 }
+"Advanced Materials": { if: 29.1, jcr: 2.0, rank: "Chemistry, Multidisciplinary 5/250" }
+"Advanced Functional Materials": { if: 19.9, jcr: 4.4, rank: "Chemistry, Multidisciplinary 11/250" }
+"ACS Nano": { if: 17.3, jcr: 6.4, rank: "Materials Science, Multidisciplinary 30/472" }
+"Advanced Science": { if: 14.1, jcr: 9.6, rank: "Chemistry, Multidisciplinary 24/250" }
+"Science Advances": { if: 13.9, jcr: 8.6, rank: "Multidisciplinary Sciences 12/140" }
+"Small": { if: 11.8, jcr: 8.4, rank: "Physics, Applied 16/191" }
+"Materials Horizons": { if: 11.4, jcr: 11.2, rank: "Chemistry, Multidisciplinary 28/250" }
+"Nano Letters": { if: 9.1, jcr: 14.1, rank: "Physics, Applied 27/191" }
+"Device": { if: 8.7, jcr: 19.5, rank: "Materials Science, Multidisciplinary 92/472" }
+"ACS Applied Materials & Interfaces": { if: 7.8, jcr: 22.5, rank: "Materials Science, Multidisciplinary 106/472" }
+"Advanced Intelligent Systems": { if: 6.7, jcr: 17.0, rank: "Automation & Control Systems 15/88" }
+"Nanoscale": { if: 5.2, jcr: 24.1, rank: "Physics, Applied 46/191" }
