@@ -95,13 +95,15 @@ function roleBadges(p, site) {
 }
 
 // "IF 26.8, JCR top 5%" → 강조 표시
+// "IF 26.8, < JCR top 5%" → "< JCR top 5%" (상위 5% 이내. 1~25번 논문은 교수님이 정리한 구간 값)
 function metricChips(note) {
   const t = String(note || "");
   const ifm = t.match(/IF\s*([\d.]+)/i);
-  const jcr = t.match(/top\s*([\d.]+)\s*%/i);
+  const jcr = t.match(/top\s*<?\s*([\d.]+)\s*%/i);
   if (!ifm && !jcr) return has(t) ? `<span class="pub-note">${esc(t)}</span>` : "";
   const tier = jcr ? Number(jcr[1]) : 100;
-  return `<span class="metrics">${ifm ? `<span class="metric metric-if">IF ${esc(ifm[1])}</span>` : ""}${jcr ? `<span class="metric metric-jcr" data-tier="${tier <= 5 ? "top" : tier <= 10 ? "high" : "mid"}">JCR top ${esc(jcr[1])}%</span>` : ""}</span>`;
+  const within = /<\s*JCR|top\s*</i.test(t) ? "&lt; " : "";
+  return `<span class="metrics">${ifm ? `<span class="metric metric-if">IF ${esc(ifm[1])}</span>` : ""}${jcr ? `<span class="metric metric-jcr" data-tier="${tier <= 5 ? "top" : tier <= 10 ? "high" : "mid"}">${within}JCR top ${esc(jcr[1])}%</span>` : ""}</span>`;
 }
 
 // 저널별 IF·JCR (data/journals.yml). 논문에 note 가 없으면 이 값을 쓴다.

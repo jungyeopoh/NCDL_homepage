@@ -87,7 +87,7 @@ journal:
     authors: "Taehoon Kim†, Jungyeop Oh†, Hyeonji Lee†, Min-Kyu Shin, Jongseo Won, Woonggi Hong, Sung-Yool Choi*, Min Ju Kim*"
     venue: "ACS Applied Materials & Interfaces"
     detail: "18, 3, 5539 (2026)"
-    note: "IF 8.2, JCR top 20%"
+    note: "IF 8.2, < JCR top 20%"
     link: ""
     selected: true
 
@@ -97,7 +97,7 @@ journal:
     authors: "Wonbae Ahn†, Seungsun Yoo†, Kang Hyun Lee, Jungyeop Oh, Hyeonji Lee, Hyunmin Kim, Inseong Lee, Sejin Lee, Woonggi Hong, Sung-Yool Choi*"
     venue: "ACS Nano"
     detail: "20, 1, 1147 (2026)"
-    note: "IF 16.1, JCR top 10%"
+    note: "IF 16.1, < JCR top 10%"
     link: ""
 
   - no: 23
@@ -106,7 +106,7 @@ journal:
     authors: "Kang Hyun Lee†, Seohak Park†, Mingu Kang†, Jungyeop Oh, Wonbae Ahn, Hyeonji Lee, Seungsun Yoo, Hyunmin Kim, Min Kyu Lee, Sung-Yool Choi*"
     venue: "Advanced Materials"
     detail: "38, e07979 (2026)"
-    note: "IF 26.8, JCR top 5%"
+    note: "IF 26.8, < JCR top 5%"
     link: ""
 
   - no: 22
@@ -115,7 +115,7 @@ journal:
     authors: "Ho-Young Maeng†, Hyeonji Lee†, Sang-Won Lee, Jungyeop Oh, Hae-Yeon Kim, Sung-Yool Choi*, Yang-Kyu Choi*"
     venue: "ACS Nano"
     detail: "19, 39407 (2025)"
-    note: "IF 16.1, JCR top 10%"
+    note: "IF 16.1, < JCR top 10%"
     link: ""
 
   - no: 21
@@ -124,7 +124,7 @@ journal:
     authors: "Namju Kim†, Jun-Hwe Cha†, Yeong Kwon Kim, Jungyeop Oh, Inyong Kim, Minkyu Jeong, Junhwan Choi, Byung Chul Jang*"
     venue: "Device"
     detail: "3, 100908 (2025)"
-    note: "IF 8.0, JCR top 20%"
+    note: "IF 8.0, < JCR top 20%"
     link: ""
 
   - no: 20
@@ -133,7 +133,7 @@ journal:
     authors: "Hyeonji Lee†, Jungyeop Oh†, Wonbae Ahn, Mingu Kang, Seohak Park, Hyunmin Kim, Seungsun Yoo, Byung Chul Jang, Sung-Yool Choi*"
     venue: "Advanced Functional Materials"
     detail: "35, 2416811 (2025)"
-    note: "IF 19.0, JCR top 5%"
+    note: "IF 19.0, < JCR top 5%"
     link: ""
     selected: true
 
@@ -143,7 +143,7 @@ journal:
     authors: "Ayoung Ham†, Wonbae Ahn†, Jungyeop Oh, Gichang Noh, Saeyoung Oh, Minsoo Kang, Hyun-Jun Chai, Joon Young Kwak, Seunghwan Seo*, Sung-Yool Choi*, Kibum Kang*"
     venue: "ACS Nano"
     detail: "19, 5406–5417 (2025)"
-    note: "IF 16.1, JCR top 10%"
+    note: "IF 16.1, < JCR top 10%"
     link: ""
 
   - no: 18
@@ -152,7 +152,7 @@ journal:
     authors: "Jun-Hwe Cha†, Inseong Lee†, Seol Won Yun†, Woonggi Hong, Hyo Hoon Byeon, Jungyeop Oh, Seohak Park, Sung-Yool Choi*"
     venue: "Nanoscale"
     detail: "17, 11305 (2025)"
-    note: "IF 5.1, JCR top 25%"
+    note: "IF 5.1, < JCR top 25%"
     link: ""
 
   - no: 17
@@ -161,7 +161,7 @@ journal:
     authors: "Jungyeop Oh†, Wonbae Ahn†, Ayoung Ham†, Hyeonji Lee, Sejin Lee, Jun-Hwe Cha, Seunghwan Seo, Kibum Kang*, Sung-Yool Choi*"
     venue: "ACS Nano"
     detail: "19, 638–648 (2025)"
-    note: "IF 16.1, JCR top 10%"
+    note: "IF 16.1, < JCR top 10%"
     link: ""
     selected: true
 
@@ -171,7 +171,7 @@ journal:
     authors: "Wonbae Ahn†, Sejin Lee†, Jungyeop Oh†, Hyeonji Lee, Sung-Yool Choi*"
     venue: "Advanced Materials"
     detail: "37, 2413640 (2025)"
-    note: "IF 26.8, JCR top 5%"
+    note: "IF 26.8, < JCR top 5%"
     link: ""
     selected: true
 
@@ -181,7 +181,7 @@ journal:
     authors: "Jungyeop Oh†, Seohak Park†, Sang Hun Lee†, Sungkyu Kim, Hyeonji Lee, Changhyeon Lee, Woonggi Hong, Jun-Hwe Cha, Mingu Kang, Jun Hyup Jin, Sung Gap Im, Min Ju Kim*, Sung-Yool Choi*"
     venue: "Advanced Science"
     detail: "11, 2308847 (2024)"
-    note: "IF 14.1, JCR top 10%"
+    note: "IF 14.1, < JCR top 10%"
     link: ""
 
   - no: 14
@@ -190,7 +190,7 @@ journal:
     authors: "Namju Kim†, Jungyeop Oh†, Sungkyu Kim, Jun-Hwe Cha, Junhwan Choi, Sung Gap Im, Sung-Yool Choi*, Byung Chul Jang*"
     venue: "Advanced Functional Materials"
     detail: "34, 2305136 (2024)"
-    note: "IF 19.0, JCR top 5%"
+    note: "IF 19.0, < JCR top 5%"
     link: ""
 
   - no: 13
@@ -208,7 +208,7 @@ journal:
     authors: "Wonbae Ahn, Han Beom Jeong, Jungyeop Oh, Woonggi Hong, Jun-Hwe Cha, Hu Young Jeong, Sung-Yool Choi*"
     venue: "Small"
     detail: "19, 2300223 (2023)"
-    note: "IF 12.1, JCR top 10%"
+    note: "IF 12.1, < JCR top 10%"
     link: ""
 
   - no: 11
@@ -217,7 +217,7 @@ journal:
     authors: "Jungyeop Oh†, Sungkyu Kim†, Changhyeon Lee, Jun-Hwe Cha, Sang Yoon Yang, Sung Gap Im, Cheolmin Park, Byung Chul Jang*, Sung-Yool Choi*"
     venue: "Advanced Materials"
     detail: "35, 2300023 (2023)"
-    note: "IF 26.8, JCR top 5%"
+    note: "IF 26.8, < JCR top 5%"
     link: ""
 
   - no: 10
@@ -253,7 +253,7 @@ journal:
     authors: "Jungyeop Oh†, Sang Yoon Yang†, Sungkyu Kim, Changhyeon Lee, Jun-Hwe Cha, Byung Chul Jang, Sung Gap Im, Sung-Yool Choi*"
     venue: "Materials Horizons"
     detail: "10, 2035 (2023)"
-    note: "IF 13.3, JCR top 10%"
+    note: "IF 13.3, < JCR top 10%"
     link: ""
 
   - no: 6
@@ -262,7 +262,7 @@ journal:
     authors: "Jungyeop Oh†, Sungkyu Kim†, Junhwan Choi, Jun-Hwe Cha, Sung Gap Im, Byung Chul Jang*, Sung-Yool Choi*"
     venue: "Advanced Intelligent Systems"
     detail: "4, 2200177 (2022)"
-    note: "IF 7.3, JCR top 20%"
+    note: "IF 7.3, < JCR top 20%"
     link: ""
 
   - no: 5
@@ -271,7 +271,7 @@ journal:
     authors: "Jun-Hwe Cha†, Byung Chul Jang†, Jungyeop Oh, Changhyeon Lee, Sang Yoon Yang, Hamin Park, Sung Gap Im, Sung-Yool Choi*"
     venue: "Advanced Intelligent Systems"
     detail: "4, 2200018 (2022)"
-    note: "IF 7.3, JCR top 20%"
+    note: "IF 7.3, < JCR top 20%"
     link: ""
 
   - no: 4
@@ -280,7 +280,7 @@ journal:
     authors: "Joon-Kyu Han, Jungyeop Oh, Ji-Man Yu, Sung-Yool Choi, Yang-Kyu Choi*"
     venue: "Small"
     detail: "17, 2103775 (2021)"
-    note: "IF 12.1, JCR top 10%"
+    note: "IF 12.1, < JCR top 10%"
     link: ""
 
   - no: 3
@@ -289,7 +289,7 @@ journal:
     authors: "Joon-Kyu Han, Jungyeop Oh, Gyeong-Jun Yun, Dongeun Yoo, Myung-Su Kim, Ji-Man Yu, Sung-Yool Choi, Yang-Kyu Choi*"
     venue: "Science Advances"
     detail: "7, eabg8836 (2021)"
-    note: "IF 14.1, JCR top 10%"
+    note: "IF 14.1, < JCR top 10%"
     link: ""
 
   - no: 2
@@ -298,7 +298,7 @@ journal:
     authors: "Jun-Hwe Cha†, Sang Yoon Yang†, Jungyeop Oh†, Shinhyun Choi, Sangsu Park, Byung Chul Jang, Wonbae Ahn, Sung-Yool Choi*"
     venue: "Nanoscale"
     detail: "12, 14339 (2020)"
-    note: "IF 7.8, JCR top 20%"
+    note: "IF 7.8, < JCR top 20%"
     link: ""
 
   - no: 1
@@ -307,7 +307,7 @@ journal:
     authors: "Byung Chul Jang†, Sungkyu Kim†, Sang Yoon Yang†, Jihun Park, Jun-Hwe Cha, Jungyeop Oh, Junhwan Choi, Sung Gap Im, Vinayak P Dravid, Sung-Yool Choi*"
     venue: "Nano Letters"
     detail: "19, 839 (2019)"
-    note: "IF 11.2, JCR top 10%"
+    note: "IF 11.2, < JCR top 10%"
     link: ""
 
 # 학회 발표 예시 (type: Oral / Poster / Invited)

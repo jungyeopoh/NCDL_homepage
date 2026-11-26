@@ -15,6 +15,7 @@ Reply to him in Korean.
 ## Data conventions
 - `publications.yml`
   - `journal:` newest first, `no` increments. Papers online without volume/pages use `detail: "in press (YEAR)"`; fill in volume/pages later. Every new or newly published paper gets `note: "IF x, JCR top y%"` with the journal's **current** values, looked up at that moment (latest JCR release, not old values from the table or earlier papers). The note freezes the value; existing papers keep theirs unless he asks.
+  - Papers #1–#25 carry his own bracket values written `note: "IF x, < JCR top y%"` (= within the top y%); the badge then reads "< JCR top y%" (his choice, 2026-11-25). New papers use the exact current value without "<".
   - `in_progress:` with `status` (In preparation / Submitted / Under review / Revision / Accepted). IF/JCR shows for Accepted and published papers only.
   - `role: first | corresponding | "first, corresponding"` when the full author list is not public yet.
   - † = (co-)first author, * = corresponding. "First author" / "Corresponding" badges are derived from marks on "Jungyeop Oh" (or `role`).
